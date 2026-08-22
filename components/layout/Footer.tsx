@@ -126,6 +126,20 @@ export default function Footer() {
           <p>Sell values shown are estimates; final offer depends on inspection.</p>
         </div>
       </div>
+
+      <div className="border-t border-white/10 py-4 text-center">
+        <p className="text-[11px] text-slate-600">
+          Designed &amp; Developed by{" "}
+          <a
+            href="https://zorvent.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-extrabold uppercase tracking-[0.18em] text-slate-400 transition hover:text-brand-300"
+          >
+            ZORVENT
+          </a>
+        </p>
+      </div>
     </footer>
   );
 }
