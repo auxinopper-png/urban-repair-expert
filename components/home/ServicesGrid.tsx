@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, Snowflake, WashingMachine, Flame, Wind } from "lucide-react";
+import { ArrowRight, BadgeCheck, Flame, Snowflake, WashingMachine, Wind } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
-import { STARTING_PRICES } from "@/lib/config";
-import { formatINR } from "@/lib/utils";
 
 const CARDS = [
   {
@@ -58,15 +56,13 @@ export default function ServicesGrid() {
                 {c.title}
               </h3>
               <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-slate-500">{c.desc}</p>
-              <div className="mt-5 flex items-center justify-between border-t border-dashed border-slate-100 pt-4">
-                <p className="text-sm text-slate-500">
-                  from{" "}
-                  <span className="text-base font-extrabold text-slate-900">
-                    {formatINR(STARTING_PRICES[c.id] ?? 349)}
-                  </span>
-                </p>
-                <span className="inline-flex items-center gap-1 text-sm font-bold text-brand-600 transition-transform group-hover:translate-x-0.5">
-                  Book <ArrowRight className="h-4 w-4" />
+              <div className="mt-5 flex items-center justify-between gap-2 border-t border-dashed border-slate-100 pt-4">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1.5 text-[11px] font-extrabold text-emerald-700">
+                  <BadgeCheck className="h-3.5 w-3.5 shrink-0" />
+                  Best Price
+                </span>
+                <span className="inline-flex items-center gap-1 text-sm font-extrabold text-brand-600 transition-transform group-hover:translate-x-0.5">
+                  Book Now <ArrowRight className="h-4 w-4" />
                 </span>
               </div>
             </Link>
