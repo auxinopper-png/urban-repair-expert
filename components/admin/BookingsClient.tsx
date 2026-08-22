@@ -8,7 +8,6 @@ import {
   FileText,
   Loader2,
   MapPin,
-  MessageCircle,
   Phone,
   Search,
   UserCheck,
@@ -21,6 +20,7 @@ import {
   type Booking,
 } from "@/lib/services-data";
 import { cn, mapsLink, prettyDate, waLink } from "@/lib/utils";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 interface Tech {
   id: string;
@@ -207,7 +207,7 @@ function BookingDrawer({
             rel="noopener"
             className="btn-wa flex-1 !py-2.5"
           >
-            <MessageCircle className="h-4 w-4" /> WhatsApp
+            <WhatsAppIcon className="h-4 w-4 shrink-0" /> WhatsApp
           </a>
           <a
             href={mapsLink(b.lat, b.lng, b.address)}

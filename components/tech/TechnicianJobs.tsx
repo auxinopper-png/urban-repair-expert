@@ -8,7 +8,6 @@ import {
   FileUp,
   Loader2,
   MapPin,
-  MessageCircle,
   Navigation,
   PackageCheck,
   Phone,
@@ -23,6 +22,7 @@ import {
 } from "@/lib/services-data";
 import { cn, mapsLink, prettyDate, prettyDateTime, waLink } from "@/lib/utils";
 import { uploadToBucket } from "@/lib/upload";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 type Job =
   | ({ kind: "booking" } & Booking)
@@ -148,7 +148,7 @@ function JobCard({ job, collapsed }: { job: Job; collapsed?: boolean }) {
               rel="noopener"
               className="btn-wa flex-1 !py-2.5"
             >
-              <MessageCircle className="h-4 w-4" /> WhatsApp
+              <WhatsAppIcon className="h-4 w-4 shrink-0" /> WhatsApp
             </a>
             <a
               href={mapsLink(job.lat, job.lng, address)}

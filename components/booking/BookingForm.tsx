@@ -13,7 +13,6 @@ import {
   Clock3,
   Loader2,
   MapPin,
-  MessageCircle,
   PartyPopper,
   Phone,
   ShieldCheck,
@@ -28,6 +27,7 @@ import { SERVICES } from "@/lib/services-data";
 import { BRANDS_COMMON } from "@/lib/services-data";
 import { SITE, TIME_SLOTS } from "@/lib/config";
 import { cn, todayISO, prettyDate, telLink } from "@/lib/utils";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 const STEPS = ["Appliance & Issue", "Schedule", "Contact & Address"];
 
@@ -530,7 +530,7 @@ function SuccessScreen({
             rel="noopener"
             className="btn-wa w-full !py-4"
           >
-            <MessageCircle className="h-5 w-5" /> Get Confirmation on WhatsApp
+            <WhatsAppIcon className="h-5 w-5 shrink-0" /> Get Confirmation on WhatsApp
           </a>
           {fallbackText ? (
             <p className="text-xs leading-relaxed text-slate-400">

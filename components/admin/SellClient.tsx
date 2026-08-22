@@ -6,7 +6,6 @@ import {
   CalendarClock,
   Loader2,
   MapPin,
-  MessageCircle,
   PackageCheck,
   Phone,
   Search,
@@ -14,6 +13,7 @@ import {
 import { assignSellTechnician, schedulePickup, updateSellStatus } from "@/app/actions/admin";
 import { SELL_STATUSES, STATUS_LABELS, STATUS_COLORS, type SellRequest } from "@/lib/services-data";
 import { cn, mapsLink, prettyDate, prettyDateTime, waLink } from "@/lib/utils";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 interface Tech {
   id: string;
@@ -194,7 +194,7 @@ export default function SellClient({
                 rel="noopener"
                 className="btn-wa flex-1 !py-2.5"
               >
-                <MessageCircle className="h-4 w-4" /> WhatsApp
+                <WhatsAppIcon className="h-4 w-4 shrink-0" /> WhatsApp
               </a>
               <a
                 href={mapsLink(selected.lat, selected.lng, selected.address)}

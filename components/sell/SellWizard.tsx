@@ -7,7 +7,6 @@ import {
   ArrowRight,
   Info,
   Loader2,
-  MessageCircle,
   PartyPopper,
   Phone,
   Snowflake,
@@ -23,6 +22,7 @@ import { uploadToBucket } from "@/lib/upload";
 import { computePrices, type PricingTree } from "@/lib/pricing";
 import { SITE } from "@/lib/config";
 import { cn, formatINR, telLink } from "@/lib/utils";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 const STEP_LABELS = [
   "Appliance",
@@ -568,7 +568,7 @@ function SellSuccess({
             rel="noopener"
             className="btn-wa w-full !py-4"
           >
-            <MessageCircle className="h-5 w-5" /> Get Confirmation on WhatsApp
+            <WhatsAppIcon className="h-5 w-5 shrink-0" /> Get Confirmation on WhatsApp
           </a>
           <div className="grid grid-cols-2 gap-3">
             <a href={telLink()} className="btn-outline !py-3.5">

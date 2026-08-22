@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, MessageCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import SectionHeading from "@/components/SectionHeading";
 import { FAQS } from "@/lib/content";
 import { waLink } from "@/lib/utils";
@@ -71,7 +72,7 @@ export default function Faq() {
               rel="noopener"
               className="mt-4 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-brand-700 transition hover:bg-brand-50"
             >
-              <MessageCircle className="h-4 w-4" /> Chat on WhatsApp
+              <WhatsAppIcon className="h-4 w-4" /> Chat on WhatsApp
             </a>
           </div>
         </div>
