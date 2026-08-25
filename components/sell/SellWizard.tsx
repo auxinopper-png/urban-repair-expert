@@ -87,6 +87,8 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
       ? computePrices(selCapacity.base_value, selAge, selCondition, tree.upliftPct)
       : null;
 
+  const range = marketRange(appliance, selModel?.name ?? null, selCapacity?.label ?? null);
+
   const otherVal = Math.round(parseFloat(otherOffer.replace(/[^\d.]/g, "")) || 0);
   const effPrices =
     prices && otherVal > 0
@@ -96,8 +98,6 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         }
       : prices;
   const beatBy = effPrices && otherVal > 0 ? effPrices.offer - otherVal : 0;
-
-  const range = marketRange(appliance, selModel?.name ?? null, selCapacity?.label ?? null);
 
   function resetFrom(index: number) {
     if (index <= 1) {
@@ -425,7 +425,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                     </div>
                   ) : otherVal > 0 ? (
                     <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
-                      Hamara direct offer already best hai — {formatINR(effPrices!.offer)}!
+                      Hamara direct offer already best hai — {formatINR(prices!.offer)}!
                     </p>
                   ) : null}
                 </div>
