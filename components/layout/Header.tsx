@@ -12,6 +12,7 @@ const NAV = [
   { href: "/", label: "Home" },
   { href: "/book", label: "Book Repair" },
   { href: "/sell", label: "Sell Old Appliance" },
+  { href: "/rates", label: "Rate Card" },
   { href: "/track", label: "Track Booking" },
   { href: "/blog", label: "Blog" },
 ];
@@ -35,10 +36,6 @@ export default function Header() {
       <div className="bg-slate-950 text-white">
         <div className="wrap flex h-9 items-center justify-between text-[12.5px] font-medium">
           <p className="flex items-center gap-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping-slow rounded-full bg-emerald-400" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
             Same-Day Doorstep Service · {SITE.hours.split("·")[0].trim()}
           </p>
           <a

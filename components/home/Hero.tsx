@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Snowflake, Wrench, ShieldCheck, Clock3, BadgeCheck, IndianRupee } from "lucide-react";
+import { ArrowRight, Snowflake, Wrench, BadgeCheck } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { SERVICES } from "@/lib/services-data";
 
@@ -19,7 +19,6 @@ export default function Hero() {
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white px-4 py-1.5 text-xs font-bold text-brand-700 shadow-sm">
-              <Clock3 className="h-3.5 w-3.5" />
               Same-Day Doorstep Service · 90-Day Warranty
             </span>
           </Reveal>
@@ -53,7 +52,7 @@ export default function Hero() {
                     <Wrench className="h-7 w-7" />
                   </span>
                   <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                    ● Available Today
+                    Available Today
                   </span>
                 </div>
                 <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-900">
@@ -76,8 +75,8 @@ export default function Hero() {
                 </ul>
 
                 <ul className="mt-4 space-y-1.5 text-[13px] text-slate-500">
-                  <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-emerald-600" /> Genuine spare parts + warranty</li>
-                  <li className="flex items-center gap-2"><IndianRupee className="h-4 w-4 text-emerald-600" /> Repairs start ₹349 · Pay after service</li>
+                  <li className="flex items-center gap-2">Genuine spare parts with warranty</li>
+                  <li className="flex items-center gap-2">Fair pricing · Pay after service</li>
                 </ul>
 
                 <Link href="/book" className="btn-primary mt-6 w-full !py-4 text-base group-hover:!bg-brand-700">
@@ -122,8 +121,8 @@ export default function Hero() {
                 </ul>
 
                 <ul className="mt-4 space-y-1.5 text-[13px] text-slate-400">
-                  <li className="flex items-center gap-2"><Snowflake className="h-4 w-4 text-amber-400" /> Photo upload + GPS pickup scheduling</li>
-                  <li className="flex items-center gap-2"><IndianRupee className="h-4 w-4 text-amber-400" /> UPI / cash payment on the spot</li>
+                  <li className="flex items-center gap-2">Photo upload + GPS pickup scheduling</li>
+                  <li className="flex items-center gap-2">UPI / cash payment on the spot</li>
                 </ul>
 
                 <Link href="/sell" className="btn-accent mt-6 w-full !py-4 text-base">

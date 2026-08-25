@@ -12,7 +12,7 @@ export const SERVICES: ServiceDef[] = [
     id: "ac",
     label: "Air Conditioner Repair",
     short: "AC",
-    problems: ["Not Cooling", "Weak Cooling", "Water Leakage", "Noise / Vibration", "Gas Refill", "PCB / Electrical", "Installation / Uninstallation", "Deep Cleaning / Service"],
+    problems: ["Repair", "General Service", "Gas Refill", "Installation", "Uninstallation", "Deep Cleaning", "Not Cooling", "Water Leakage", "Noise / Vibration", "PCB / Electrical"],
   },
   {
     id: "refrigerator",
@@ -34,11 +34,12 @@ export const SERVICES: ServiceDef[] = [
   },
 ];
 
-export const BRANDS_COMMON = [
-  "LG", "Samsung", "Whirlpool", "Voltas", "Daikin", "Blue Star", "Godrej",
-  "Haier", "Hitachi", "Panasonic", "Bosch", "IFB", "Lloyd", "Carrier",
-  "O'General", "Videocon", "Intex", "Onida", "Other",
-];
+export const BRANDS_BY_APPLIANCE: Record<ApplianceId, string[]> = {
+  ac: ["Voltas", "Daikin", "LG", "Blue Star", "Samsung", "Hitachi", "Panasonic", "Lloyd", "Carrier", "O'General", "Godrej", "Haier", "Midea", "TCL", "Onida", "Other"],
+  refrigerator: ["LG", "Samsung", "Whirlpool", "Godrej", "Haier", "Bosch", "Hitachi", "Panasonic", "Electrolux", "Videocon", "Kelvinator", "Hisense", "Onida", "Other"],
+  washing_machine: ["LG", "Samsung", "Whirlpool", "IFB", "Bosch", "Haier", "Godrej", "Panasonic", "Midea", "Siemens", "Onida", "Videocon", "Intex", "Other"],
+  geyser: ["AO Smith", "Bajaj", "V-Guard", "Racold", "Havells", "Crompton", "Venus", "Usha", "Ferroli", "Kenstar", "Other"],
+};
 
 export const BOOKING_STATUSES = [
   "pending",
@@ -126,6 +127,7 @@ export interface SellRequest {
   condition_label: string;
   estimated_market: number;
   estimated_offer: number;
+  other_offer: number | null;
   photos: SellPhoto[] | null;
   video_url: string | null;
   address: string;

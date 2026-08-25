@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { TrendingUp, Truck, Wallet, Camera, MapPin, ArrowRight } from "lucide-react";
+import { TrendingUp, Truck, Wallet, Camera, ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
 
 export default function SellBanner() {
@@ -17,8 +17,7 @@ export default function SellBanner() {
           />
           <div className="relative grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-amber-300 ring-1 ring-inset ring-amber-400/30">
-                <TrendingUp className="h-3.5 w-3.5" /> Premium Buyback Program
+              <span className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-amber-300 ring-1 ring-inset ring-amber-400/30"> Premium Buyback Program
               </span>
               <h2 className="mt-5 text-balance text-[28px] font-extrabold leading-tight tracking-tight sm:text-4xl">
                 Your old AC or fridge is worth{" "}
@@ -65,7 +64,7 @@ export default function SellBanner() {
             </div>
           </div>
           <p className="relative mt-8 flex items-center gap-1.5 text-[11px] text-slate-500">
-            <MapPin className="h-3 w-3" /> *Estimated comparison vs standard exchange values; final offer depends on inspection at pickup.
+            *Estimated comparison vs standard exchange values; final offer depends on inspection at pickup.
           </p>
         </div>
       </Reveal>

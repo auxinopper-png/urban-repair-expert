@@ -19,7 +19,7 @@ import LocationPicker, { type LocationValue } from "@/components/forms/LocationP
 import PhotoSlots, { type PhotoSlot } from "@/components/forms/PhotoSlots";
 import { getRecaptchaToken } from "@/lib/recaptcha";
 import { uploadToBucket } from "@/lib/upload";
-import { computePrices, type PricingTree } from "@/lib/pricing";
+import { computePrices, marketRange, type PricingTree } from "@/lib/pricing";
 import { SITE } from "@/lib/config";
 import { cn, formatINR, telLink } from "@/lib/utils";
 import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
@@ -56,6 +56,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
   const [location, setLocation] = useState<LocationValue>({ address: "", lat: null, lng: null });
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
+  const [otherOffer, setOtherOffer] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ code: string; fallback_text?: string; offer: number; market: number } | null>(null);
@@ -85,6 +86,18 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
     selCapacity && selAge && selCondition
       ? computePrices(selCapacity.base_value, selAge, selCondition, tree.upliftPct)
       : null;
+
+  const otherVal = Math.round(parseFloat(otherOffer.replace(/[^\d.]/g, "")) || 0);
+  const effPrices =
+    prices && otherVal > 0
+      ? {
+          market: prices.market,
+          offer: Math.max(prices.offer, Math.round((otherVal * (1 + tree.upliftPct / 100)) / 10) * 10),
+        }
+      : prices;
+  const beatBy = effPrices && otherVal > 0 ? effPrices.offer - otherVal : 0;
+
+  const range = marketRange(appliance, selModel?.name ?? null, selCapacity?.label ?? null);
 
   function resetFrom(index: number) {
     if (index <= 1) {
@@ -155,7 +168,8 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         age_label: selAge!.label,
         condition_label: selCondition!.label,
         estimated_market: prices!.market,
-        estimated_offer: prices!.offer,
+        estimated_offer: effPrices!.offer,
+        other_offer: otherVal > 0 ? otherVal : null,
         photos: photoUrls,
         video_url: videoUrl,
         address: location.address.trim(),
@@ -170,7 +184,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         setResult({
           code: res.code!,
           fallback_text: res.fallback_text,
-          offer: prices!.offer,
+          offer: effPrices!.offer,
           market: prices!.market,
         });
     } catch {
@@ -285,6 +299,19 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
 
             {step === 5 ? (
               <div className="space-y-3">
+                {range && prices ? (
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
+                    <p className="text-xs font-bold text-slate-700">
+                      Amazon / Flipkart exchange range:{" "}
+                      <span className="text-slate-900">
+                        {formatINR(range.min)} – {formatINR(range.max)}
+                      </span>
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-slate-400">
+                      Typical online exchange values for this category
+                    </p>
+                  </div>
+                ) : null}
                 {tree.conditions.map((c) => {
                   const on = conditionId === c.id;
                   const preview = selCapacity
@@ -352,7 +379,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                   </p>
                   <div className="mt-1 flex items-end gap-3">
                     <p className="text-4xl font-extrabold tracking-tight text-emerald-700">
-                      {prices ? formatINR(prices.offer) : "—"}
+                      {effPrices ? formatINR(effPrices.offer) : "—"}
                     </p>
                     {prices ? (
                       <p className="pb-1 text-sm text-slate-400 line-through">
@@ -366,11 +393,55 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                   </p>
                 </div>
 
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+                  <label className="label-text !mb-1">
+                    Kisi aur buyer / exchange ka offer mila?{" "}
+                    <span className="font-normal text-slate-400">(optional)</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">₹</span>
+                    <input
+                      className="field !pl-9"
+                      placeholder="e.g. 2500"
+                      inputMode="numeric"
+                      value={otherOffer}
+                      onChange={(e) => setOtherOffer(e.target.value.replace(/[^\d]/g, ""))}
+                    />
+                  </div>
+                  {beatBy > 0 ? (
+                    <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-xl bg-slate-50 p-3 text-center">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Other Buyer</p>
+                        <p className="text-lg font-extrabold text-slate-500 line-through">{formatINR(otherVal)}</p>
+                      </div>
+                      <ArrowRight className="mx-auto h-4 w-4 text-slate-300" />
+                      <div>
+                        <p className="text-[10px] font-extrabold uppercase tracking-wide text-brand-600">Urban Repair Expert</p>
+                        <p className="text-lg font-extrabold text-brand-700">{formatINR(effPrices!.offer)}</p>
+                      </div>
+                      <p className="col-span-3 rounded-lg bg-emerald-100 py-1.5 text-xs font-extrabold text-emerald-800">
+                        You get {formatINR(beatBy)} more with us
+                      </p>
+                    </div>
+                  ) : otherVal > 0 ? (
+                    <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
+                      Hamara direct offer already best hai — {formatINR(effPrices!.offer)}!
+                    </p>
+                  ) : null}
+                </div>
+
                 <SummaryRow label="Appliance" value={`${appliance === "ac" ? "AC" : "Refrigerator"}`} />
                 <SummaryRow label="Model" value={`${selBrand?.name} ${selModel?.name}`} />
                 <SummaryRow label="Capacity" value={selCapacity?.label} />
                 <SummaryRow label="Age" value={selAge?.label} />
                 <SummaryRow label="Condition" value={selCondition?.label} />
+                {range ? (
+                  <SummaryRow
+                    label="Market Range"
+                    value={`${formatINR(range.min)} – ${formatINR(range.max)} (online exchanges)`}
+                  />
+                ) : null}
+                {otherVal > 0 ? <SummaryRow label="Other Offer" value={formatINR(otherVal)} /> : null}
                 <SummaryRow
                   label="Photos"
                   value={`${Object.values(photos).filter((p) => p.file).length} uploaded`}
@@ -459,7 +530,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                 Your Live Offer
               </p>
               <p className="truncate text-xl font-extrabold tracking-tight">
-                {formatINR(prices.offer)}{" "}
+                {formatINR(effPrices!.offer)}{" "}
                 <span className="text-xs font-medium text-slate-400 line-through">
                   mkt {formatINR(prices.market)}
                 </span>
@@ -478,9 +549,9 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
       ) : null}
 
       <p className="mx-auto mt-6 max-w-md text-center text-[11px] leading-relaxed text-slate-400">
-        <Info className="mr-1 inline h-3 w-3" />
-        Values are fair estimates based on live scrap &amp; resale market data. Final offer is
-        confirmed after a quick physical inspection at pickup — no obligation to sell.
+        Final price appliance ki condition, model aur pickup par inspection ke baad confirm hoga.
+        Online values Amazon/Flipkart exchange market ke approx reference hain — bechne ki koi
+        obligation nahi.
       </p>
     </div>
   );

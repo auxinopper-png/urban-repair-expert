@@ -1,4 +1,4 @@
-import { Star, Quote } from "lucide-react";
+import { Star, ExternalLink } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 import { TESTIMONIALS } from "@/lib/content";
@@ -17,13 +17,7 @@ export default function Testimonials() {
           {TESTIMONIALS.map((t, i) => (
             <Reveal key={t.name} delay={(i % 3) * 0.07}>
               <figure className="relative h-full rounded-[24px] bg-white p-6 shadow-card ring-1 ring-slate-100">
-                <Quote className="absolute right-5 top-5 h-8 w-8 text-brand-100" />
-                <div className="flex gap-0.5">
-                  {Array.from({ length: t.stars }).map((_, s) => (
-                    <Star key={s} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <blockquote className="mt-3 text-[14px] leading-relaxed text-slate-600">
+                <blockquote className="text-[14px] leading-relaxed text-slate-600">
                   “{t.text}”
                 </blockquote>
                 <figcaption className="mt-5 flex items-center gap-3 border-t border-slate-50 pt-4">
@@ -41,6 +35,21 @@ export default function Testimonials() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.15} className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold text-slate-500">
+          <span className="inline-flex items-center gap-1.5">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            {SITE.ratingValue} average rating
+          </span>
+          <a
+            href={SITE.googleReviewsUrl}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-700"
+          >
+            Read all on Google <ExternalLink className="h-4 w-4" />
+          </a>
+        </Reveal>
       </div>
     </section>
   );

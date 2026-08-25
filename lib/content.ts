@@ -62,7 +62,7 @@ export const FAQS = [
   },
   {
     q: "Do you provide a service warranty?",
-    a: "Yes! Every repair comes with up to 90 days warranty on the specific fault fixed, and genuine spare parts carry manufacturer warranty. The warranty details are printed on your digital invoice.",
+    a: "Every repair carries a written 180-day warranty on the specific fault we fix, and genuine spare parts carry manufacturer warranty. Warranty covers workmanship and replaced parts; physical damage, liquid ingress or third-party tampering are excluded. Full terms are printed on your digital invoice.",
   },
   {
     q: "Are the spare parts genuine?",
@@ -78,7 +78,7 @@ export const FAQS = [
   },
   {
     q: "When do I pay? Do you accept cards or UPI?",
-    a: "You pay only after the job is completed to your satisfaction. We accept UPI, cards and cash — you'll receive a proper GST invoice on WhatsApp and email.",
+    a: "You inspect the work first — pay only after the job is completed to your satisfaction. We accept UPI, cards and cash. You receive a proper GST invoice on WhatsApp and email with warranty terms printed on it. No advance payment for standard repairs.",
   },
   {
     q: "Which areas do you serve?",
@@ -90,7 +90,7 @@ export const WHY_US = [
   { title: "Same-Day Service", desc: "Book before 5 PM and get expert help today — not tomorrow.", icon: "zap" },
   { title: "Doorstep Convenience", desc: "No shop visits, no carrying appliances. We come fully equipped.", icon: "home" },
   { title: "Genuine Spare Parts", desc: "OEM parts with warranty. Old parts handed back to you.", icon: "shield" },
-  { title: "90-Day Warranty", desc: "Every repair backed by written warranty on workmanship.", icon: "badge" },
+  { title: "180-Day Warranty", desc: "Every repair backed by written warranty on workmanship.", icon: "badge" },
   { title: "Transparent Pricing", desc: "Exact quote approved by you before work starts. No surprises.", icon: "tag" },
   { title: "Verified Experts", desc: "Background-checked, uniformed technicians with 8+ yrs avg. experience.", icon: "user" },
 ];

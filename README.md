@@ -108,3 +108,19 @@ Example: 190 L fridge base ₹2,100 · 3–5 yrs (×0.85) · Good (×0.85) → m
 ## Tech stack
 
 Next.js 15 (App Router) · React 19 · TypeScript strict · Tailwind CSS v4 · Framer Motion · Supabase (Postgres, Auth, Storage, Realtime) · lucide-react
+
+
+### Google Reviews auto-sync (optional)
+
+Website ka Google rating/review count live sync karne ke liye:
+
+```env
+GOOGLE_PLACES_API_KEY=your_places_api_key
+NEXT_PUBLIC_GOOGLE_PLACE_ID=your_business_place_id
+```
+
+Place ID nikaalne ke liye: [developers.google.com/maps/documentation/places/web-service/place-id](https://developers.google.com/maps/documentation/places/web-service/place-id) pe business name search karo. Keys add hone ke baad section hourly auto-update hota hai. Without keys, `lib/config.ts` ke `ratingValue` / `reviewCount` values dikhte hain — inhe apne real Google Business Profile numbers se update kar lena.
+
+### Rate Card
+
+`/rates` page par AC ka complete rate card hai — prices `lib/data/rate-card.ts` me edit kar sakte ho. Fridge / Washing Machine / Geyser cards isi structure me add honge.

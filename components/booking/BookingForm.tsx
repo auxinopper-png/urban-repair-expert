@@ -23,8 +23,7 @@ import { createBooking } from "@/app/actions/bookings";
 import LocationPicker, { type LocationValue } from "@/components/forms/LocationPicker";
 import { getRecaptchaToken } from "@/lib/recaptcha";
 import { uploadToBucket } from "@/lib/upload";
-import { SERVICES } from "@/lib/services-data";
-import { BRANDS_COMMON } from "@/lib/services-data";
+import { SERVICES, BRANDS_BY_APPLIANCE } from "@/lib/services-data";
 import { SITE, TIME_SLOTS } from "@/lib/config";
 import { cn, todayISO, prettyDate, telLink } from "@/lib/utils";
 import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
@@ -205,6 +204,7 @@ export default function BookingForm() {
                       onClick={() => {
                         setAppliance(s.id);
                         setProblems([]);
+                        setBrand("");
                       }}
                       className={cn(
                         "flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition active:scale-[0.98]",
@@ -239,7 +239,7 @@ export default function BookingForm() {
                       <label className="label-text">Brand *</label>
                       <select value={brand} onChange={(e) => setBrand(e.target.value)} className="field">
                         <option value="">Select brand</option>
-                        {BRANDS_COMMON.map((b) => (
+                        {(BRANDS_BY_APPLIANCE[appliance as keyof typeof BRANDS_BY_APPLIANCE] ?? []).map((b) => (
                           <option key={b} value={b}>
                             {b}
                           </option>
@@ -357,16 +357,12 @@ export default function BookingForm() {
               </div>
 
               <div className="mt-5 flex flex-wrap gap-2.5">
-                {[
-                  { icon: Zap, text: "Same-Day Service Available" },
-                  { icon: Clock3, text: "Live Status Updates" },
-                  { icon: ShieldCheck, text: "90-Day Warranty" },
-                ].map(({ icon: Icon, text }) => (
+                {["Same-Day Service", "Live Status Updates", "180-Day Warranty"].map((text) => (
                   <span
                     key={text}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3.5 py-2 text-xs font-bold text-brand-700"
+                    className="rounded-full bg-brand-50 px-3.5 py-2 text-xs font-bold text-brand-700"
                   >
-                    <Icon className="h-3.5 w-3.5" /> {text}
+                    {text}
                   </span>
                 ))}
               </div>

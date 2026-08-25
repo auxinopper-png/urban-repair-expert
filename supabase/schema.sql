@@ -50,6 +50,7 @@ create table if not exists public.sell_requests (
   condition_label text not null,
   estimated_market integer not null default 0,
   estimated_offer integer not null default 0,
+  other_offer integer,
   photos jsonb not null default '[]'::jsonb,
   video_url text,
   address text not null,

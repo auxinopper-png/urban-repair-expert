@@ -119,6 +119,7 @@ export default function SellClient({
                   </p>
                   <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
                     mkt ₹{Number(r.estimated_market || 0).toLocaleString("en-IN")}
+                    {r.other_offer ? ` · other ₹${Number(r.other_offer).toLocaleString("en-IN")}` : ""}
                   </p>
                 </div>
                 <span className="text-xs font-semibold text-slate-500">
@@ -210,6 +211,12 @@ export default function SellClient({
               <Row label="Mobile" value={selected.mobile} />
               <Row label="Appliance" value={`${selected.appliance === "ac" ? "AC" : "Refrigerator"} · ${selected.brand_name} ${selected.model_name}`} />
               <Row label="Capacity / Age / Condition" value={`${selected.capacity_label} · ${selected.age_label} · ${selected.condition_label}`} />
+              {selected.other_offer ? (
+                <Row
+                  label="Competitor / Exchange Offer"
+                  value={`₹${Number(selected.other_offer).toLocaleString("en-IN")} → we quoted ₹${Number(selected.estimated_offer).toLocaleString("en-IN")}`}
+                />
+              ) : null}
               <Row label="Address" value={selected.address} icon={<MapPin className="h-3.5 w-3.5" />} />
               {selected.admin_note ? <Row label="Note" value={selected.admin_note} /> : null}
               <Row label="Requested" value={prettyDateTime(selected.created_at)} />

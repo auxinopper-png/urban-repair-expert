@@ -17,6 +17,7 @@ export interface SellInput {
   condition_label: string;
   estimated_market: number;
   estimated_offer: number;
+  other_offer?: number | null;
   photos: SellPhoto[];
   video_url?: string | null;
   address: string;
@@ -79,6 +80,7 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
       condition_label: input.condition_label,
       estimated_market: input.estimated_market,
       estimated_offer: input.estimated_offer,
+      other_offer: input.other_offer ?? null,
       photos: input.photos,
       video_url: input.video_url || null,
       address: input.address.trim(),
@@ -105,6 +107,7 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
     condition_label: input.condition_label,
     estimated_market: input.estimated_market,
     estimated_offer: input.estimated_offer,
+    other_offer: input.other_offer ?? null,
     photos: input.photos,
     video_url: input.video_url || null,
     address: input.address.trim(),

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Flame, Snowflake, WashingMachine, Wind } from "lucide-react";
+import { ArrowRight, Flame, Snowflake, WashingMachine, Wind } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 
@@ -58,7 +58,6 @@ export default function ServicesGrid() {
               <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-slate-500">{c.desc}</p>
               <div className="mt-5 flex items-center justify-between gap-2 border-t border-dashed border-slate-100 pt-4">
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1.5 text-[11px] font-extrabold text-emerald-700">
-                  <BadgeCheck className="h-3.5 w-3.5 shrink-0" />
                   Best Price
                 </span>
                 <span className="inline-flex items-center gap-1 text-sm font-extrabold text-brand-600 transition-transform group-hover:translate-x-0.5">
@@ -69,6 +68,14 @@ export default function ServicesGrid() {
           </Reveal>
         ))}
       </div>
+      <Reveal delay={0.15} className="mt-8 text-center">
+        <Link
+          href="/rates"
+          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-brand-400 hover:text-brand-700"
+        >
+          View complete AC Rate Card <ArrowRight className="h-4 w-4" />
+        </Link>
+      </Reveal>
     </section>
   );
 }

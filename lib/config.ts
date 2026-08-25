@@ -20,9 +20,9 @@ export const SITE = {
   hours: "Open all days · 8:00 AM – 9:00 PM",
   geo: { lat: 17.4453, lng: 78.454 },
   ratingValue: "4.9",
-  reviewCount: "2340",
-  yearsExperience: "8",
-  repairsDone: "15000",
+  reviewCount: "128",
+  yearsExperience: "5",
+  repairsDone: "5000",
   googleReviewsUrl: "#",
   socials: {
     instagram: "#",

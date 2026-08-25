@@ -16,8 +16,7 @@ export default function Footer() {
           <p className="mt-4 text-sm leading-relaxed text-slate-400">
             {SITE.description}
           </p>
-          <div className="mt-5 flex items-center gap-2 rounded-2xl bg-white/5 p-3">
-            <ShieldCheck className="h-8 w-8 shrink-0 text-emerald-400" />
+          <div className="mt-5 flex items-center rounded-2xl bg-white/5 p-3">
             <p className="text-xs leading-snug text-slate-300">
               Verified technicians · Genuine spare parts · Service warranty on every job
             </p>
@@ -45,6 +44,7 @@ export default function Footer() {
           <ul className="space-y-2.5 text-sm">
             {[
               ["Book a Repair", "/book"],
+              ["AC Rate Card", "/rates"],
               ["Sell Old AC", "/sell"],
               ["Sell Old Refrigerator", "/sell"],
               ["Track Booking", "/track"],

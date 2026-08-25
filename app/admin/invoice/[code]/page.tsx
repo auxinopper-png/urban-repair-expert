@@ -143,7 +143,7 @@ export default async function InvoicePage({
 
           <section className="mt-6 rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-100">
             <p className="text-xs font-bold text-emerald-800">
-              Warranty: 90 days on repaired fault · Genuine parts carry manufacturer warranty.
+              Warranty: 180 days on repaired fault · Genuine parts carry manufacturer warranty.
             </p>
             <p className="mt-1 text-[11px] leading-relaxed text-emerald-700">
               Payments accepted: UPI / Cards / Cash. This is a computer-generated invoice.
