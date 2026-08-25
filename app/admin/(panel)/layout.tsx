@@ -26,9 +26,9 @@ export default async function AdminPanelLayout({
       <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
         {demo ? (
           <div className="mb-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-xl bg-amber-400 px-4 py-2.5 text-center text-xs font-extrabold text-slate-950">
-            🧪 DEMO MODE — sample data, changes reset on server restart.
+            DEMO MODE — sample data, changes reset on server restart.
             <span className="font-semibold text-amber-900">
-              .env.local me Supabase keys daalte hi real panel activate ho jayega.
+              Add Supabase keys to .env.local to switch to the live panel.
             </span>
           </div>
         ) : null}

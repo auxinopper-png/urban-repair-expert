@@ -69,7 +69,7 @@ export default async function AdminTechniciansPage() {
         <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Technicians</h1>
         <p className="mt-1 text-sm text-slate-500">
           Field team accounts — they sign in on the technician portal to manage jobs.
-          {!sb ? " (Demo me naye accounts add nahi hote)" : ""}
+          {!sb ? " (Account creation is disabled in demo mode)" : ""}
         </p>
       </header>
       <TechniciansClient techs={rows} />

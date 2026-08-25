@@ -101,21 +101,21 @@ export default function BookingForm() {
   function validateStep(s: number): { key: string; msg: string }[] {
     if (s === 0) {
       const list: { key: string; msg: string }[] = [];
-      if (!appliance) list.push({ key: "appliance", msg: "Pehle appliance select karo" });
-      if (!brand) list.push({ key: "brand", msg: "Brand select karo" });
+      if (!appliance) list.push({ key: "appliance", msg: "Please select an appliance first" });
+      if (!brand) list.push({ key: "brand", msg: "Please select a brand" });
       return list;
     }
     if (s === 1) {
       const list: { key: string; msg: string }[] = [];
-      if (name.trim().length < 2) list.push({ key: "name", msg: "Apna naam likho" });
+      if (name.trim().length < 2) list.push({ key: "name", msg: "Please enter your name" });
       if (!/^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10)))
-        list.push({ key: "mobile", msg: "Sahi 10-digit mobile number likho" });
-      if (!date) list.push({ key: "date", msg: "Visit ki date select karo" });
+        list.push({ key: "mobile", msg: "Please enter a valid 10-digit mobile number" });
+      if (!date) list.push({ key: "date", msg: "Please select a visit date" });
       return list;
     }
     const list: { key: string; msg: string }[] = [];
     if (location.address.trim().length < 10)
-      list.push({ key: "address", msg: "Complete doorstep address likho" });
+      list.push({ key: "address", msg: "Please enter your complete doorstep address" });
     return list;
   }
 
@@ -277,7 +277,7 @@ export default function BookingForm() {
                   );
                 })}
               </div>
-              <ErrLine k="appliance" msg="Pehle appliance select karo" />
+              <ErrLine k="appliance" msg="Please select an appliance first" />
 
               {appliance ? (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 space-y-5">
@@ -299,7 +299,7 @@ export default function BookingForm() {
                           </option>
                         ))}
                       </select>
-                      <ErrLine k="brand" msg="Brand select karo" />
+                      <ErrLine k="brand" msg="Please select a brand" />
                     </div>
                     <div>
                       <label className="label-text">

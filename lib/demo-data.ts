@@ -104,7 +104,7 @@ export const DEMO_BOOKINGS_SEED: Booking[] = [
     photo_url: null,
     status: "in_progress",
     technician_id: "tech-demo-2",
-    admin_note: "Heating element replace hoga — ₹850 approved.",
+    admin_note: "Heating element replacement approved at ₹850.",
   },
   {
     id: "b5",
@@ -146,7 +146,7 @@ export const DEMO_BOOKINGS_SEED: Booking[] = [
     photo_url: null,
     status: "cancelled",
     technician_id: null,
-    admin_note: "Customer ne cancel kiya — engineer late.",
+    admin_note: "Customer cancelled — technician was delayed.",
   },
 ];
 
@@ -233,6 +233,6 @@ export const DEMO_SELLS_SEED: SellRequest[] = [
       return d.toISOString();
     })(),
     technician_id: "tech-demo-2",
-    admin_note: "Compressor dead — scrap plus value agreed ₹1,560 cash.",
+    admin_note: "Compressor dead — final scrap-plus value of ₹1,560 paid in cash.",
   },
 ];

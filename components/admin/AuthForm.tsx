@@ -35,7 +35,7 @@ export default function AuthForm({
         router.refresh();
         return;
       }
-      setError(`Demo ke liye use karo — Email: ${expected} · Password: demo123`);
+      setError(`Use these demo credentials — Email: ${expected} · Password: demo123`);
       setLoading(false);
       return;
     }
@@ -138,8 +138,7 @@ export default function AuthForm({
       </button>
       {!configured ? (
         <p className="text-center text-[11px] leading-relaxed text-slate-400">
-          Supabase connect karte hi real email/password login automatically activate ho jayega aur
-          demo mode remove ho jayega.
+          Real email/password login activates automatically once Supabase keys are added — demo mode is removed then.
         </p>
       ) : null}
     </form>

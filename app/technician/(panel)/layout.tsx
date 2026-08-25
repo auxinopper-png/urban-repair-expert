@@ -40,7 +40,7 @@ export default async function TechnicianLayout({
         </div>
         {demo ? (
           <div className="bg-amber-400 py-1.5 text-center text-[11px] font-extrabold text-slate-950">
-            🧪 DEMO MODE — sample jobs · Supabase connect karke real data milega
+            DEMO MODE — sample jobs · connect Supabase for live data
           </div>
         ) : null}
       </header>

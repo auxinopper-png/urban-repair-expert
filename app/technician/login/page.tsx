@@ -23,7 +23,7 @@ export default function TechnicianLoginPage() {
           <h1 className="text-2xl font-extrabold tracking-tight">Technician Portal</h1>
           <p className="mt-1 mb-6 text-sm text-slate-500">
             {demo
-              ? "Demo mode — assigned jobs test karo."
+              ? "Demo mode — test with assigned sample jobs."
               : "View your assigned jobs & update status on the go."}
           </p>
           <AuthForm role="technician" redirectTo="/technician" demo={demo} />

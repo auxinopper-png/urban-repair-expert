@@ -350,8 +350,8 @@ export async function createTechnician(form: FormData) {
   const svc = getServiceSupabase();
   if (!svc) {
     const store = getDemoStore();
-    if (store.techs.some((t) => t.mobile === mobile && mobile))
-      return { ok: false, error: "This mobile is already registered." };
+    if (mobile && store.techs.some((t) => t.mobile === mobile))
+      return { ok: false, error: "This mobile number is already registered." };
     store.techs.push({
       id: `demo-tech-${Date.now()}`,
       name,
@@ -361,7 +361,7 @@ export async function createTechnician(form: FormData) {
     revalidatePath("/admin/technicians");
     return {
       ok: true,
-      error: `Demo: "${name}" added to team list. Real login account Supabase connect karne par banega.`,
+      error: `Demo: "${name}" added to the team list. Real login credentials can be created once Supabase is connected.`,
     };
   }
 

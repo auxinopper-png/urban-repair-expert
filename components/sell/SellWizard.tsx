@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Info,
   Loader2,
+  MessageCircle,
   PartyPopper,
   Phone,
   Snowflake,
@@ -17,12 +18,12 @@ import {
 import { createSellRequest } from "@/app/actions/sell";
 import LocationPicker, { type LocationValue } from "@/components/forms/LocationPicker";
 import PhotoSlots, { type PhotoSlot } from "@/components/forms/PhotoSlots";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import { getRecaptchaToken } from "@/lib/recaptcha";
 import { uploadToBucket } from "@/lib/upload";
 import { computePrices, marketRange, type PricingTree } from "@/lib/pricing";
 import { SITE } from "@/lib/config";
 import { cn, formatINR, telLink } from "@/lib/utils";
-import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 const STEP_LABELS = [
   "Appliance",
@@ -87,8 +88,6 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
       ? computePrices(selCapacity.base_value, selAge, selCondition, tree.upliftPct)
       : null;
 
-  const range = marketRange(appliance, selModel?.name ?? null, selCapacity?.label ?? null);
-
   const otherVal = Math.round(parseFloat(otherOffer.replace(/[^\d.]/g, "")) || 0);
   const effPrices =
     prices && otherVal > 0
@@ -98,6 +97,8 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         }
       : prices;
   const beatBy = effPrices && otherVal > 0 ? effPrices.offer - otherVal : 0;
+
+  const range = marketRange(appliance, selModel?.name ?? null, selCapacity?.label ?? null);
 
   function resetFrom(index: number) {
     if (index <= 1) {
@@ -119,25 +120,25 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
   function validateStep(s: number): { key: string; msg: string } | null {
     switch (s) {
       case 0:
-        return appliance ? null : { key: "appliance", msg: "Pehle appliance select karo" };
+        return appliance ? null : { key: "appliance", msg: "Please select an appliance first" };
       case 1:
-        return brandId ? null : { key: "brand", msg: "Brand select karo" };
+        return brandId ? null : { key: "brand", msg: "Please select a brand" };
       case 2:
-        return modelId ? null : { key: "model", msg: "Model / series select karo" };
+        return modelId ? null : { key: "model", msg: "Please select a model / series" };
       case 3:
-        return capacityId ? null : { key: "capacity", msg: "Capacity select karo" };
+        return capacityId ? null : { key: "capacity", msg: "Please select a capacity" };
       case 4:
-        return ageId ? null : { key: "age", msg: "Appliance ki age select karo" };
+        return ageId ? null : { key: "age", msg: "Please select the appliance age" };
       case 5:
-        return conditionId ? null : { key: "condition", msg: "Condition select karo" };
+        return conditionId ? null : { key: "condition", msg: "Please select the condition" };
       case 7:
         return location.address.trim().length >= 10
           ? null
-          : { key: "address", msg: "Complete doorstep address likho" };
+          : { key: "address", msg: "Please enter your complete doorstep address" };
       case 8: {
-        if (name.trim().length < 2) return { key: "sname", msg: "Apna naam likho" };
+        if (name.trim().length < 2) return { key: "sname", msg: "Please enter your name" };
         if (!/^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10)))
-          return { key: "smobile", msg: "Sahi 10-digit mobile number likho" };
+          return { key: "smobile", msg: "Please enter a valid 10-digit mobile number" };
         return null;
       }
       default:
@@ -216,6 +217,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
       setSubmitting(false);
     }
   }
+
   if (result) {
     return <SellSuccess {...result} />;
   }
@@ -401,11 +403,13 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
             ) : null}
 
             {step === 6 ? (
-              <PhotoSlots
-                slots={PHOTO_SLOTS}
-                value={photos}
-                onChange={(k, v) => setPhotos((p) => ({ ...p, [k]: v }))}
-              />
+              <>
+                <PhotoSlots
+                  slots={PHOTO_SLOTS}
+                  value={photos}
+                  onChange={(k, v) => setPhotos((p) => ({ ...p, [k]: v }))}
+                />
+              </>
             ) : null}
 
             {step === 7 ? (
@@ -424,7 +428,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                   />
                   {isErr("address") ? (
                     <p className="mt-1.5 text-[11px] font-semibold text-rose-600">
-                      Complete doorstep address likho (house no., street, area, pincode)
+                      Please enter your complete doorstep address (house no., street, area, pincode)
                     </p>
                   ) : null}
                 </div>
@@ -455,7 +459,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
 
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
                   <label className="label-text !mb-1">
-                    Kisi aur buyer / exchange ka offer mila?{" "}
+                    Got an offer from another buyer / exchange?{" "}
                     <span className="font-normal text-slate-400">(optional)</span>
                   </label>
                   <div className="relative">
@@ -485,7 +489,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                     </div>
                   ) : otherVal > 0 ? (
                     <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
-                      Hamara direct offer already best hai — {formatINR(prices!.offer)}!
+                      Our offer is already the best — {formatINR(prices!.offer)}!
                     </p>
                   ) : null}
                 </div>
@@ -523,7 +527,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                       }}
                     />
                     {isErr("sname") ? (
-                      <p className="mt-1 text-[11px] font-semibold text-rose-600">Apna naam likho</p>
+                      <p className="mt-1 text-[11px] font-semibold text-rose-600">Please enter your name</p>
                     ) : null}
                   </div>
                   <div>
@@ -543,7 +547,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                     />
                     {isErr("smobile") ? (
                       <p className="mt-1 text-[11px] font-semibold text-rose-600">
-                        Sahi 10-digit mobile number likho
+                        Please enter a valid 10-digit mobile number
                       </p>
                     ) : null}
                   </div>
@@ -625,9 +629,10 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
       ) : null}
 
       <p className="mx-auto mt-6 max-w-md text-center text-[11px] leading-relaxed text-slate-400">
-        Final price appliance ki condition, model aur pickup par inspection ke baad confirm hoga.
-        Online values Amazon/Flipkart exchange market ke approx reference hain — bechne ki koi
-        obligation nahi.
+        <Info className="mr-1 inline h-3 w-3" />
+        The final price is confirmed after inspection of your appliance&apos;s condition and model
+        at pickup. Online values are approximate Amazon/Flipkart exchange references — there is no
+        obligation to sell.
       </p>
     </div>
   );
@@ -715,7 +720,7 @@ function SellSuccess({
             rel="noopener"
             className="btn-wa w-full !py-4"
           >
-            <WhatsAppIcon className="h-5 w-5 shrink-0" /> Get Confirmation on WhatsApp
+            <WhatsAppIcon className="h-5 w-5" /> Get Confirmation on WhatsApp
           </a>
           <div className="grid grid-cols-2 gap-3">
             <a href={telLink()} className="btn-outline !py-3.5">

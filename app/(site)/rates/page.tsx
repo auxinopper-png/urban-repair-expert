@@ -35,8 +35,8 @@ export default function RatesPage() {
         />
 
         <div className="mx-auto mb-8 max-w-2xl rounded-2xl bg-amber-50 px-5 py-4 text-center text-[13px] font-semibold leading-relaxed text-amber-900 ring-1 ring-amber-200">
-          Final price appliance ki condition aur model inspection ke baad confirm hota hai.
-          Rates premium market benchmark se ~20% better value par set hain.
+          The final price is confirmed after inspecting your appliance's condition and model.
+          Fixed, transparent pricing approved by you before any work begins.
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:gap-5">
@@ -97,7 +97,7 @@ export default function RatesPage() {
             Warranty: repaired fault par 180 din · replaced parts par manufacturer warranty.
             Payment sirf job complete hone ke baad — UPI / Card / Cash accepted.
           </p>
-          <p>Fridge, Washing Machine aur Geyser rate cards jald hi isi page par add honge.</p>
+          <p>Rate cards for refrigerators, washing machines & geysers are coming soon on this page.</p>
         </div>
 
         <Reveal delay={0.15} className="mt-8 flex flex-wrap justify-center gap-3">
@@ -108,7 +108,7 @@ export default function RatesPage() {
             <Phone className="h-4.5 w-4.5" /> Call for Quote
           </a>
           <a
-            href={waLink("Hi! Mujhe AC rate card ke baare me jaanna hai.")}
+            href={waLink("Hi! I want to know more about your AC rates.")}
             target="_blank"
             rel="noopener"
             className="btn-wa !py-4"

@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
           <h1 className="text-2xl font-extrabold tracking-tight">Admin Panel</h1>
           <p className="mt-1 mb-6 text-sm text-slate-500">
             {demo
-              ? "Demo mode — sample data ke saath poora panel test karo."
+              ? "Demo mode — explore the full panel with sample data."
               : "Sign in to manage bookings, pickups & pricing."}
           </p>
           <AuthForm role="admin" redirectTo="/admin" demo={demo} />
