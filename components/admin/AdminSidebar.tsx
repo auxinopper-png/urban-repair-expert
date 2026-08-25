@@ -55,21 +55,22 @@ export default function AdminSidebar({ name }: { name: string }) {
 
   return (
     <>
-      <div className="sticky top-0 z-40 flex items-center justify-between bg-slate-950 px-4 py-3 lg:hidden">
-        <Logo light />
-        <button
-          onClick={() => setOpen(!open)}
-          className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
-          aria-label="Menu"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
-      {open ? (
-        <div className="fixed inset-x-0 top-[57px] z-40 border-t border-white/10 bg-slate-950 p-4 lg:hidden">
-          {nav}
+      <div className="sticky top-0 z-40 bg-slate-950 lg:hidden">
+        <div className="flex items-center justify-between px-4 py-3">
+          <Logo light />
+          <button
+            onClick={() => setOpen(!open)}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
+            aria-label="Menu"
+            aria-expanded={open}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-      ) : null}
+        {open ? (
+          <nav className="border-t border-white/10 p-3">{nav}</nav>
+        ) : null}
+      </div>
 
       <aside className="hidden w-64 shrink-0 flex-col bg-slate-950 p-5 lg:sticky lg:top-0 lg:flex lg:h-screen">
         <div className="mb-8 rounded-2xl bg-white p-2.5">

@@ -49,7 +49,7 @@ export default function RealtimeToaster() {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed right-4 top-4 z-[100] flex w-80 flex-col gap-2">
+    <div className="pointer-events-none fixed inset-x-3 top-3 z-[100] flex flex-col gap-2 sm:inset-x-auto sm:right-4 sm:top-4 sm:w-96">
       <AnimatePresence>
         {toasts.map((t) => (
           <motion.div

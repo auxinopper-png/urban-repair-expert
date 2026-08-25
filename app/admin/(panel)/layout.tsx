@@ -20,7 +20,7 @@ export default async function AdminPanelLayout({
     !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex min-h-screen flex-col bg-slate-100 lg:flex-row">
       <AdminSidebar name={profile.name || "Admin"} />
       <RealtimeToaster />
       <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
