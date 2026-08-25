@@ -32,7 +32,7 @@ export default function BookPage() {
             { icon: Clock3, t: "Same-Day", d: "Service visits" },
             { icon: BadgeCheck, t: "Verified", d: "Expert technicians" },
             { icon: ShieldCheck, t: "180-Day", d: "Service warranty" },
-            { icon: IndianRupee, t: "Pay Later", d: "After the job is done" },
+            { icon: IndianRupee, t: "Transparent Price", d: "No hidden charges" },
           ].map((b) => (
             <div
               key={b.t}
