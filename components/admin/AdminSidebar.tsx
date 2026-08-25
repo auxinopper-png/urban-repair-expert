@@ -60,11 +60,16 @@ export default function AdminSidebar({ name }: { name: string }) {
           <Logo light />
           <button
             onClick={() => setOpen(!open)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
+            className={cn(
+              "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition active:scale-95",
+              open
+                ? "bg-white text-slate-950"
+                : "bg-brand-600 text-white shadow-lg shadow-brand-600/40"
+            )}
             aria-label="Menu"
             aria-expanded={open}
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {open ? <X className="h-5.5 w-5.5" /> : <Menu className="h-5.5 w-5.5" />}
           </button>
         </div>
         {open ? (
