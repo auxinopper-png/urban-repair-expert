@@ -17,7 +17,12 @@ export default function Testimonials() {
           {TESTIMONIALS.map((t, i) => (
             <Reveal key={t.name} delay={(i % 3) * 0.07}>
               <figure className="relative h-full rounded-[24px] bg-white p-6 shadow-card ring-1 ring-slate-100">
-                <blockquote className="text-[14px] leading-relaxed text-slate-600">
+                <div className="flex gap-0.5">
+                  {Array.from({ length: t.stars }).map((_, s) => (
+                    <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <blockquote className="mt-3 text-[14px] leading-relaxed text-slate-600">
                   “{t.text}”
                 </blockquote>
                 <figcaption className="mt-5 flex items-center gap-3 border-t border-slate-50 pt-4">

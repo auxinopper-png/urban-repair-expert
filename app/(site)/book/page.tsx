@@ -6,7 +6,7 @@ import { BadgeCheck, ShieldCheck, Clock3, IndianRupee } from "lucide-react";
 export const metadata: Metadata = {
   title: "Book Repair Service — AC, Fridge, Washing Machine & Geyser",
   description:
-    "Book same-day doorstep appliance repair in under 60 seconds. Verified technicians, genuine spare parts, 90-day warranty. Pay after service.",
+    "Book same-day doorstep appliance repair in under 60 seconds. Verified technicians, genuine spare parts, 180-day warranty. Pay after service.",
   alternates: { canonical: "/book" },
 };
 
@@ -31,7 +31,7 @@ export default function BookPage() {
           {[
             { icon: Clock3, t: "Same-Day", d: "Service visits" },
             { icon: BadgeCheck, t: "Verified", d: "Expert technicians" },
-            { icon: ShieldCheck, t: "90-Day", d: "Service warranty" },
+            { icon: ShieldCheck, t: "180-Day", d: "Service warranty" },
             { icon: IndianRupee, t: "Pay Later", d: "After the job is done" },
           ].map((b) => (
             <div

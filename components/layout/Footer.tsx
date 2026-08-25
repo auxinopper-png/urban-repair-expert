@@ -18,7 +18,7 @@ export default function Footer() {
           </p>
           <div className="mt-5 flex items-center rounded-2xl bg-white/5 p-3">
             <p className="text-xs leading-snug text-slate-300">
-              Verified technicians · Genuine spare parts · Service warranty on every job
+              Verified technicians · Genuine spare parts · 180-day service warranty on every job
             </p>
           </div>
           <div className="mt-5 flex gap-3">

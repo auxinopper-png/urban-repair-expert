@@ -19,7 +19,7 @@ export default function Hero() {
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white px-4 py-1.5 text-xs font-bold text-brand-700 shadow-sm">
-              Same-Day Doorstep Service · 90-Day Warranty
+              Same-Day Doorstep Service · 180-Day Warranty
             </span>
           </Reveal>
           <Reveal delay={0.08}>

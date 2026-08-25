@@ -12,27 +12,38 @@ const ICONS: Record<string, typeof Zap> = {
   user: UserCheck,
 };
 
+const TINTS = [
+  "bg-brand-50 text-brand-600",
+  "bg-emerald-50 text-emerald-600",
+  "bg-sky-50 text-sky-600",
+  "bg-amber-50 text-amber-600",
+  "bg-violet-50 text-violet-600",
+  "bg-rose-50 text-rose-600",
+];
+
 export default function WhyUs() {
   return (
-    <section className="wrap py-12 lg:py-16">
+    <section className="wrap py-14 lg:py-20">
       <SectionHeading
         eyebrow="Why Urban Repair Expert"
         title="The service experience appliances deserve"
         sub="Thousands of households trust us — here's what makes every booking premium."
       />
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-5">
         {WHY_US.map((f, i) => {
           const Icon = ICONS[f.icon];
           return (
-            <Reveal key={f.title} delay={i * 0.04}>
-              <div className="group h-full rounded-2xl bg-gradient-to-b from-slate-50 to-white p-3.5 ring-1 ring-slate-100 transition hover:ring-brand-300 sm:p-5">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-brand-600 shadow-card transition group-hover:bg-brand-600 group-hover:text-white sm:h-11 sm:w-11">
-                  <Icon className="h-4.5 w-4.5 sm:h-6 sm:w-6" />
+            <Reveal key={f.title} delay={i * 0.05}>
+              <div className="group h-full rounded-[22px] border border-slate-100 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-glow sm:p-6">
+                <span
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl transition group-hover:scale-105 sm:h-12 sm:w-12 ${TINTS[i % TINTS.length]}`}
+                >
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </span>
-                <h3 className="mt-2.5 text-[13px] font-extrabold leading-tight tracking-tight text-slate-900 sm:mt-3.5 sm:text-base">
+                <h3 className="mt-3 text-[13.5px] font-extrabold leading-snug tracking-tight text-slate-900 sm:text-base">
                   {f.title}
                 </h3>
-                <p className="mt-1 line-clamp-3 text-[11px] leading-snug text-slate-500 sm:mt-1.5 sm:text-sm sm:leading-relaxed">
+                <p className="mt-1.5 text-[11.5px] leading-relaxed text-slate-500 sm:text-sm">
                   {f.desc}
                 </p>
               </div>
