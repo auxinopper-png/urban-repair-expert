@@ -112,32 +112,55 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
     if (index <= 3) setCapacityId(null);
   }
 
-  function canNext() {
-    switch (step) {
+  const [errKey, setErrKey] = useState<string | null>(null);
+  const [errMsg, setErrMsg] = useState("");
+  const isErr = (k: string) => errKey === k;
+
+  function validateStep(s: number): { key: string; msg: string } | null {
+    switch (s) {
       case 0:
-        return Boolean(appliance);
+        return appliance ? null : { key: "appliance", msg: "Pehle appliance select karo" };
       case 1:
-        return Boolean(brandId);
+        return brandId ? null : { key: "brand", msg: "Brand select karo" };
       case 2:
-        return Boolean(modelId);
+        return modelId ? null : { key: "model", msg: "Model / series select karo" };
       case 3:
-        return Boolean(capacityId);
+        return capacityId ? null : { key: "capacity", msg: "Capacity select karo" };
       case 4:
-        return Boolean(ageId);
+        return ageId ? null : { key: "age", msg: "Appliance ki age select karo" };
       case 5:
-        return Boolean(conditionId);
-      case 6:
-        return true;
+        return conditionId ? null : { key: "condition", msg: "Condition select karo" };
       case 7:
-        return location.address.trim().length >= 10;
-      case 8:
-        return (
-          name.trim().length >= 2 &&
-          /^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10))
-        );
+        return location.address.trim().length >= 10
+          ? null
+          : { key: "address", msg: "Complete doorstep address likho" };
+      case 8: {
+        if (name.trim().length < 2) return { key: "sname", msg: "Apna naam likho" };
+        if (!/^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10)))
+          return { key: "smobile", msg: "Sahi 10-digit mobile number likho" };
+        return null;
+      }
       default:
-        return false;
+        return null;
     }
+  }
+
+  function tryNext() {
+    const err = validateStep(step);
+    if (err) {
+      setErrKey(err.key);
+      setErrMsg(err.msg);
+      requestAnimationFrame(() => {
+        document
+          .getElementById(`fld-${err.key}`)
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      return;
+    }
+    setErrKey(null);
+    setErrMsg("");
+    if (step < 8) setStep(step + 1);
+    else submit();
   }
 
   async function submit() {
@@ -193,15 +216,6 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
       setSubmitting(false);
     }
   }
-
-  async function next() {
-    if (step < 8) {
-      setStep(step + 1);
-      return;
-    }
-    await submit();
-  }
-
   if (result) {
     return <SellSuccess {...result} />;
   }
@@ -235,70 +249,99 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
           className="card p-6 sm:p-8"
         >
           <h2 className="text-xl font-extrabold tracking-tight">{STEP_LABELS[step]}</h2>
+          {errMsg && isErr(errKey ?? "") ? (
+            <p className="mt-2 text-[11px] font-semibold text-rose-600">{errMsg}</p>
+          ) : null}
 
           <div className="mt-5 space-y-2.5">
             {step === 0 ? (
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { id: "refrigerator", label: "Refrigerator", icon: Snowflake },
-                  { id: "ac", label: "Air Conditioner", icon: Wind },
-                ].map((a) => (
-                  <button
-                    key={a.id}
-                    onClick={() => {
-                      setAppliance(a.id as "refrigerator" | "ac");
-                      resetFrom(1);
-                    }}
-                    className={cn(
-                      "flex flex-col items-center gap-3 rounded-2xl border-2 p-6 transition active:scale-[0.98]",
-                      appliance === a.id
-                        ? "border-brand-600 bg-brand-50 shadow-glow"
-                        : "border-slate-100 hover:border-brand-200"
-                    )}
-                  >
-                    <span
+              <>
+                <div
+                  id="fld-appliance"
+                  className={cn(
+                    "grid grid-cols-2 gap-3 rounded-3xl",
+                    isErr("appliance") && "bg-rose-50/60 p-1 -m-1 outline outline-2 outline-rose-300"
+                  )}
+                >
+                  {[
+                    { id: "refrigerator", label: "Refrigerator", icon: Snowflake },
+                    { id: "ac", label: "Air Conditioner", icon: Wind },
+                  ].map((a) => (
+                    <button
+                      key={a.id}
+                      onClick={() => {
+                        setAppliance(a.id as "refrigerator" | "ac");
+                        resetFrom(1);
+                        setErrKey(null);
+                      }}
                       className={cn(
-                        "flex h-16 w-16 items-center justify-center rounded-2xl",
-                        appliance === a.id ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-500"
+                        "flex flex-col items-center gap-3 rounded-2xl border-2 p-6 transition active:scale-[0.98]",
+                        appliance === a.id
+                          ? "border-brand-600 bg-brand-50 shadow-glow"
+                          : "border-slate-100 hover:border-brand-200"
                       )}
                     >
-                      <a.icon className="h-9 w-9" />
-                    </span>
-                    <span className="text-base font-bold text-slate-900">{a.label}</span>
-                  </button>
-                ))}
-              </div>
+                      <span
+                        className={cn(
+                          "flex h-16 w-16 items-center justify-center rounded-2xl",
+                          appliance === a.id ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-500"
+                        )}
+                      >
+                        <a.icon className="h-9 w-9" />
+                      </span>
+                      <span className="text-base font-bold text-slate-900">{a.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
             ) : null}
 
             {step >= 1 && step <= 4
-              ? renderOptions(
-                  step === 1
-                    ? applianceBrands.map((b) => ({ value: b.id, label: b.name }))
-                    : step === 2
-                      ? models.map((m) => ({ value: m.id, label: m.name }))
-                      : step === 3
-                        ? capacities.map((c) => ({
-                            value: c.id,
-                            label: c.label,
-                          }))
-                        : tree.ages.map((a) => ({ value: String(a.id), label: a.label })),
-                  step === 1 ? (brandId ?? "") : step === 2 ? (modelId ?? "") : step === 3 ? (capacityId ?? "") : ageId ? String(ageId) : "",
-                  (v: string) => {
-                    if (step === 1) {
-                      setBrandId(v);
-                      setModelId(null);
-                      setCapacityId(null);
-                    } else if (step === 2) {
-                      setModelId(v);
-                      setCapacityId(null);
-                    } else if (step === 3) setCapacityId(v);
-                    else setAgeId(Number(v));
-                  }
-                )
+              ? (() => {
+                  const k = step === 1 ? "brand" : step === 2 ? "model" : step === 3 ? "capacity" : "age";
+                  return (
+                    <div
+                      id={`fld-${k}`}
+                      className={cn("rounded-2xl", isErr(k) && "outline outline-2 outline-rose-300")}
+                    >
+                      {renderOptions(
+                        step === 1
+                          ? applianceBrands.map((b) => ({ value: b.id, label: b.name }))
+                          : step === 2
+                            ? models.map((m) => ({ value: m.id, label: m.name }))
+                            : step === 3
+                              ? capacities.map((c) => ({
+                                  value: c.id,
+                                  label: c.label,
+                                }))
+                              : tree.ages.map((a) => ({ value: String(a.id), label: a.label })),
+                        step === 1 ? (brandId ?? "") : step === 2 ? (modelId ?? "") : step === 3 ? (capacityId ?? "") : ageId ? String(ageId) : "",
+                        (v: string) => {
+                          setErrKey(null);
+                          if (step === 1) {
+                            setBrandId(v);
+                            setModelId(null);
+                            setCapacityId(null);
+                          } else if (step === 2) {
+                            setModelId(v);
+                            setCapacityId(null);
+                          } else if (step === 3) setCapacityId(v);
+                          else setAgeId(Number(v));
+                        }
+                      )}
+                    </div>
+                  );
+                })()
               : null}
 
             {step === 5 ? (
-              <div className="space-y-3">
+              <div
+                id="fld-condition"
+                className={cn(
+                  "space-y-3 rounded-2xl",
+                  isErr("condition") && "outline outline-2 outline-rose-300"
+                )}
+              >
                 {range && prices ? (
                   <div className="rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
                     <p className="text-xs font-bold text-slate-700">
@@ -320,7 +363,10 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                   return (
                     <button
                       key={c.id}
-                      onClick={() => setConditionId(c.id)}
+                      onClick={() => {
+                        setConditionId(c.id);
+                        setErrKey(null);
+                      }}
                       className={cn(
                         "flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition active:scale-[0.99]",
                         on ? "border-brand-600 bg-brand-50" : "border-slate-100 hover:border-brand-200"
@@ -363,12 +409,26 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
             ) : null}
 
             {step === 7 ? (
-              <>
+              <div id="fld-address">
                 <p className="-mt-2 text-sm text-slate-500">
                   Where should we pick up? Pin GPS for accuracy or type your full address.
                 </p>
-                <LocationPicker value={location} onChange={setLocation} />
-              </>
+                <div className="mt-4">
+                  <LocationPicker
+                    value={location}
+                    onChange={(v) => {
+                      setLocation(v);
+                      setErrKey(null);
+                    }}
+                    error={isErr("address")}
+                  />
+                  {isErr("address") ? (
+                    <p className="mt-1.5 text-[11px] font-semibold text-rose-600">
+                      Complete doorstep address likho (house no., street, area, pincode)
+                    </p>
+                  ) : null}
+                </div>
+              </div>
             ) : null}
 
             {step === 8 ? (
@@ -452,24 +512,40 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                   <div>
                     <label className="label-text">Your Name *</label>
                     <input
-                      className="field"
+                      id="fld-sname"
+                      className={cn("field", isErr("sname") && "!border-rose-400 focus:!border-rose-400 focus:!ring-rose-500/10")}
                       placeholder="Full name"
                       autoComplete="name"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (isErr("sname")) setErrKey(null);
+                      }}
                     />
+                    {isErr("sname") ? (
+                      <p className="mt-1 text-[11px] font-semibold text-rose-600">Apna naam likho</p>
+                    ) : null}
                   </div>
                   <div>
                     <label className="label-text">Mobile Number *</label>
                     <input
-                      className="field"
+                      id="fld-smobile"
+                      className={cn("field", isErr("smobile") && "!border-rose-400 focus:!border-rose-400 focus:!ring-rose-500/10")}
                       placeholder="98765 43210"
                       inputMode="numeric"
                       autoComplete="tel-national"
                       maxLength={12}
                       value={mobile}
-                      onChange={(e) => setMobile(e.target.value.replace(/[^\d ]/g, ""))}
+                      onChange={(e) => {
+                        setMobile(e.target.value.replace(/[^\d ]/g, ""));
+                        if (isErr("smobile")) setErrKey(null);
+                      }}
                     />
+                    {isErr("smobile") ? (
+                      <p className="mt-1 text-[11px] font-semibold text-rose-600">
+                        Sahi 10-digit mobile number likho
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
@@ -498,7 +574,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                 <ArrowLeft className="h-4 w-4" /> Back
               </button>
             ) : null}
-            <button disabled={!canNext() || submitting} onClick={next} className="btn-accent flex-1 !py-4 text-base">
+            <button disabled={submitting} onClick={tryNext} className="btn-accent flex-1 !py-4 text-base">
               {submitting ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" /> Booking Pickup…

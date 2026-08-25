@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { MapPin, LocateFixed, Loader2, CheckCircle2 } from "lucide-react";
-import { mapsLink } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { cn, mapsLink } from "@/lib/utils";
 
 export interface LocationValue {
   address: string;
@@ -14,17 +13,19 @@ export interface LocationValue {
 export default function LocationPicker({
   value,
   onChange,
+  error,
 }: {
   value: LocationValue;
   onChange: (v: LocationValue) => void;
+  error?: boolean;
 }) {
   const [locating, setLocating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [gpsError, setGpsError] = useState<string | null>(null);
 
   function useGps() {
-    setError(null);
+    setGpsError(null);
     if (!("geolocation" in navigator)) {
-      setError("Location not supported on this device. Please type your address.");
+      setGpsError("Location not supported on this device. Please type your address.");
       return;
     }
     setLocating(true);
@@ -35,7 +36,7 @@ export default function LocationPicker({
       },
       () => {
         setLocating(false);
-        setError("Couldn't access location. No problem — type your address below.");
+        setGpsError("Couldn't access location. No problem — type your address below.");
       },
       { enableHighAccuracy: true, timeout: 12000 }
     );
@@ -63,15 +64,18 @@ export default function LocationPicker({
         <textarea
           rows={3}
           required
-          className="field mt-1 resize-none"
+          className={cn(
+            "field mt-1 resize-none",
+            error && "!border-rose-400 focus:!border-rose-400 focus:!ring-rose-500/10"
+          )}
           placeholder="Flat / House no., Building, Street, Landmark, Area, City, Pincode"
           value={value.address}
           onChange={(e) => onChange({ ...value, address: e.target.value })}
         />
       </div>
 
-      {error ? (
-        <p className="rounded-xl bg-amber-50 px-4 py-2.5 text-xs font-medium text-amber-800">{error}</p>
+      {gpsError ? (
+        <p className="rounded-xl bg-amber-50 px-4 py-2.5 text-xs font-medium text-amber-800">{gpsError}</p>
       ) : null}
 
       {value.lat != null && value.lng != null ? (

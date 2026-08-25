@@ -83,16 +83,55 @@ export default function BookingForm() {
     setPhotoUploading(false);
   }
 
-  function canNext() {
-    if (step === 0) return Boolean(appliance && brand);
-    if (step === 1)
-      return (
-        name.trim().length >= 2 &&
-        /^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10)) &&
-        Boolean(date) &&
-        Boolean(slot)
-      );
-    return location.address.trim().length >= 10;
+  const [errors, setErrors] = useState<string[]>([]);
+  function isErr(k: string) {
+    return errors.includes(k);
+  }
+  function clearErr(k: string) {
+    setErrors((e) => (e.includes(k) ? e.filter((x) => x !== k) : e));
+  }
+  const errCls = (k: string) =>
+    isErr(k) ? "!border-rose-400 focus:!border-rose-400 focus:!ring-rose-500/10" : "";
+  function ErrLine({ k, msg }: { k: string; msg: string }) {
+    return isErr(k) ? (
+      <p className="mt-1 text-[11px] font-semibold text-rose-600">{msg}</p>
+    ) : null;
+  }
+
+  function validateStep(s: number): { key: string; msg: string }[] {
+    if (s === 0) {
+      const list: { key: string; msg: string }[] = [];
+      if (!appliance) list.push({ key: "appliance", msg: "Pehle appliance select karo" });
+      if (!brand) list.push({ key: "brand", msg: "Brand select karo" });
+      return list;
+    }
+    if (s === 1) {
+      const list: { key: string; msg: string }[] = [];
+      if (name.trim().length < 2) list.push({ key: "name", msg: "Apna naam likho" });
+      if (!/^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10)))
+        list.push({ key: "mobile", msg: "Sahi 10-digit mobile number likho" });
+      if (!date) list.push({ key: "date", msg: "Visit ki date select karo" });
+      return list;
+    }
+    const list: { key: string; msg: string }[] = [];
+    if (location.address.trim().length < 10)
+      list.push({ key: "address", msg: "Complete doorstep address likho" });
+    return list;
+  }
+
+  function tryContinue() {
+    const errs = validateStep(step);
+    if (errs.length) {
+      setErrors(errs.map((e) => e.key));
+      requestAnimationFrame(() => {
+        document
+          .getElementById(`fld-${errs[0].key}`)
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      return false;
+    }
+    setErrors([]);
+    return true;
   }
 
   async function submit() {
@@ -193,7 +232,13 @@ export default function BookingForm() {
                 Pick your appliance — takes just a few taps.
               </p>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
+              <div
+                id="fld-appliance"
+                className={cn(
+                  "mt-5 grid grid-cols-2 gap-3 rounded-3xl",
+                  isErr("appliance") && "bg-rose-50/60 p-1 -m-1 outline outline-2 outline-rose-300"
+                )}
+              >
                 {SERVICES.map((s, i) => {
                   const Icon = APPLIANCE_ICONS[i];
                   const active = appliance === s.id;
@@ -205,6 +250,7 @@ export default function BookingForm() {
                         setAppliance(s.id);
                         setProblems([]);
                         setBrand("");
+                        clearErr("appliance");
                       }}
                       className={cn(
                         "flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition active:scale-[0.98]",
@@ -231,13 +277,21 @@ export default function BookingForm() {
                   );
                 })}
               </div>
+              <ErrLine k="appliance" msg="Pehle appliance select karo" />
 
               {appliance ? (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 space-y-5">
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label className="label-text">Brand *</label>
-                      <select value={brand} onChange={(e) => setBrand(e.target.value)} className="field">
+                      <select
+                        value={brand}
+                        onChange={(e) => {
+                          setBrand(e.target.value);
+                          clearErr("brand");
+                        }}
+                        className={cn("field", errCls("brand"))}
+                      >
                         <option value="">Select brand</option>
                         {(BRANDS_BY_APPLIANCE[appliance as keyof typeof BRANDS_BY_APPLIANCE] ?? []).map((b) => (
                           <option key={b} value={b}>
@@ -245,6 +299,7 @@ export default function BookingForm() {
                           </option>
                         ))}
                       </select>
+                      <ErrLine k="brand" msg="Brand select karo" />
                     </div>
                     <div>
                       <label className="label-text">
@@ -304,12 +359,17 @@ export default function BookingForm() {
                 <div>
                   <label className="label-text">Your Name *</label>
                   <input
-                    className="field"
+                    id="fld-name"
+                    className={cn("field", errCls("name"))}
                     placeholder="Full name"
                     autoComplete="name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      clearErr("name");
+                    }}
                   />
+                  <ErrLine k="name" msg="Please enter your name" />
                 </div>
                 <div>
                   <label className="label-text">Mobile Number *</label>
@@ -318,18 +378,23 @@ export default function BookingForm() {
                       +91
                     </span>
                     <input
-                      className="field !pl-13"
+                      id="fld-mobile"
+                      className={cn("field !pl-13", errCls("mobile"))}
                       placeholder="98765 43210"
                       inputMode="numeric"
                       autoComplete="tel-national"
                       maxLength={12}
                       value={mobile}
-                      onChange={(e) => setMobile(e.target.value.replace(/[^\d ]/g, ""))}
+                      onChange={(e) => {
+                        setMobile(e.target.value.replace(/[^\d ]/g, ""));
+                        clearErr("mobile");
+                      }}
                     />
                     {/^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10)) ? (
                       <CheckCircle2 className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-emerald-500" />
                     ) : null}
                   </div>
+                  <ErrLine k="mobile" msg="Enter a valid 10-digit mobile number" />
                 </div>
               </div>
 
@@ -337,12 +402,17 @@ export default function BookingForm() {
                 <div>
                   <label className="label-text">Preferred Date *</label>
                   <input
+                    id="fld-date"
                     type="date"
                     min={todayISO()}
-                    className="field"
+                    className={cn("field", errCls("date"))}
                     value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    onChange={(e) => {
+                      setDate(e.target.value);
+                      clearErr("date");
+                    }}
                   />
+                  <ErrLine k="date" msg="Select a visit date" />
                 </div>
                 <div>
                   <label className="label-text">Preferred Time *</label>
@@ -377,7 +447,17 @@ export default function BookingForm() {
               </p>
 
               <div className="mt-5 space-y-5">
-                <LocationPicker value={location} onChange={setLocation} />
+                <div id="fld-address">
+                  <LocationPicker
+                    value={location}
+                    onChange={(v) => {
+                      setLocation(v);
+                      clearErr("address");
+                    }}
+                    error={isErr("address")}
+                  />
+                  <ErrLine k="address" msg="Please write your complete doorstep address (house no., street, area, pincode)" />
+                </div>
 
                 <div>
                   <label className="label-text">
@@ -455,8 +535,9 @@ export default function BookingForm() {
             {step < 2 ? (
               <button
                 type="button"
-                disabled={!canNext()}
-                onClick={() => setStep(step + 1)}
+                onClick={() => {
+                  if (tryContinue()) setStep(step + 1);
+                }}
                 className="btn-primary flex-1 !py-4"
               >
                 Continue <ArrowRight className="h-5 w-5" />
@@ -464,8 +545,10 @@ export default function BookingForm() {
             ) : (
               <button
                 type="button"
-                disabled={!canNext() || submitting || photoUploading}
-                onClick={submit}
+                disabled={submitting || photoUploading}
+                onClick={() => {
+                  if (tryContinue()) submit();
+                }}
                 className="btn-primary flex-1 !py-4 text-base"
               >
                 {submitting ? (
