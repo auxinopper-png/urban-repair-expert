@@ -41,7 +41,7 @@ const STATS = [
 
 export default function StatsBar() {
   return (
-    <section className="wrap -mt-2 lg:-mt-6">
+    <section className="wrap py-4">
       <Reveal>
         <div className="grid grid-cols-2 gap-3 rounded-[28px] border border-slate-100 bg-white p-5 shadow-card sm:p-7 lg:grid-cols-4">
           {STATS.map((s) => (

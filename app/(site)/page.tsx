@@ -1,8 +1,9 @@
 import Hero from "@/components/home/Hero";
-import StatsBar from "@/components/home/StatsBar";
-import ServicesGrid from "@/components/home/ServicesGrid";
-import HowItWorks from "@/components/home/HowItWorks";
+import RepairBanner from "@/components/home/RepairBanner";
 import SellBanner from "@/components/home/SellBanner";
+import ServicesGrid from "@/components/home/ServicesGrid";
+import StatsBar from "@/components/home/StatsBar";
+import HowItWorks from "@/components/home/HowItWorks";
 import WhyUs from "@/components/home/WhyUs";
 import Testimonials from "@/components/home/Testimonials";
 import GoogleReviews from "@/components/home/GoogleReviews";
@@ -56,10 +57,11 @@ export default function HomePage() {
         }}
       />
       <Hero />
-      <StatsBar />
+      <RepairBanner />
+      <SellBanner />
       <ServicesGrid />
       <HowItWorks />
-      <SellBanner />
+      <StatsBar />
       <WhyUs />
       <Testimonials />
       <GoogleReviews />

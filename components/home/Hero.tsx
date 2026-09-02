@@ -59,55 +59,57 @@ export default function Hero() {
         <div className="mt-10 grid gap-4 lg:grid-cols-2 lg:gap-5">
           {/* ── BOOK REPAIR ─────────────────────────────── */}
           <Reveal delay={0.1}>
-            <Link
-              href="/book"
-              className="group flex h-full flex-col rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-glow sm:p-8"
-            >
-              <div className="flex items-center justify-between">
-                <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30">
-                  <Wrench className="h-6.5 w-6.5" />
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-extrabold text-emerald-700">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            <div className="group relative h-full rounded-[28px] bg-gradient-to-br from-brand-600 via-brand-500 to-sky-400 p-[3px] shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-glow">
+              <Link
+                href="/book"
+                className="flex h-full flex-col rounded-[25px] bg-white p-6 sm:p-8"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30">
+                    <Wrench className="h-6.5 w-6.5" />
                   </span>
-                  Available Today
-                </span>
-              </div>
-
-              <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-900">
-                Book Repair Service
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-500">
-                Verified experts at your doorstep, often within 2–4 hours. Pay only after the job
-                is done.
-              </p>
-
-              <ul className="mt-5 space-y-2.5 text-[13.5px] font-semibold text-slate-600">
-                {SERVICES.map((s) => (
-                  <li key={s.id} className="flex items-center gap-2.5">
-                    <BadgeCheck className="h-4.5 w-4.5 shrink-0 text-brand-600" />
-                    {s.label}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-auto pt-6">
-                <span className="btn-primary w-full !py-4 text-base group-hover:!bg-brand-700">
-                  Book Repair Now
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </span>
-                <p className="mt-3 flex items-center justify-center gap-3 text-[11px] font-bold text-slate-400">
-                  <span className="inline-flex items-center gap-1">
-                    <ShieldCheck className="h-3.5 w-3.5 text-brand-500" /> 180-Day Warranty
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-extrabold text-emerald-700 ring-1 ring-emerald-200">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                    </span>
+                    Available Today
                   </span>
-                  <span className="inline-flex items-center gap-1">
-                    <IndianRupee className="h-3.5 w-3.5 text-brand-500" /> Transparent Price
-                  </span>
+                </div>
+
+                <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-900">
+                  Book Repair Service
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-slate-500">
+                  Verified experts at your doorstep, often within 2–4 hours. Pay only after the job
+                  is done.
                 </p>
-              </div>
-            </Link>
+
+                <ul className="mt-5 space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+                  {SERVICES.map((s) => (
+                    <li key={s.id} className="flex items-center gap-2.5">
+                      <BadgeCheck className="h-4.5 w-4.5 shrink-0 text-brand-600" />
+                      {s.label}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-auto pt-6">
+                  <span className="btn-primary w-full !py-4 text-base group-hover:!bg-brand-700">
+                    Book Repair Now
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </span>
+                  <p className="mt-3 flex items-center justify-center gap-3 text-[11px] font-bold text-slate-400">
+                    <span className="inline-flex items-center gap-1">
+                      <ShieldCheck className="h-3.5 w-3.5 text-brand-500" /> 180-Day Warranty
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <IndianRupee className="h-3.5 w-3.5 text-brand-500" /> Transparent Price
+                    </span>
+                  </p>
+                </div>
+              </Link>
+            </div>
           </Reveal>
 
           {/* ── SELL NOW ────────────────────────────────── */}
