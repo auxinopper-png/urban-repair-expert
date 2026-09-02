@@ -3,6 +3,7 @@
 import { getServerSupabase } from "@/lib/supabase/server";
 import { genCode, formatINR, mapsLink } from "@/lib/utils";
 import { verifyRecaptcha } from "@/lib/auth";
+import type { SellPhoto } from "@/lib/services-data";
 
 export interface SellInput {
   customer_name: string;
@@ -17,6 +18,8 @@ export interface SellInput {
   estimated_market: number;
   estimated_offer: number;
   other_offer?: number | null;
+  photos: SellPhoto[];
+  video_url?: string | null;
   address: string;
   lat?: number | null;
   lng?: number | null;
@@ -45,7 +48,8 @@ function buildSellText(code: string, s: SellInput) {
     s.other_offer ? `Other Exchange Offer: ${formatINR(s.other_offer)}` : "",
     `Address: ${s.address}`,
     s.lat != null && s.lng != null ? `GPS Location: ${mapsLink(s.lat, s.lng)}` : "",
-    "Photos & video: customer will attach in this chat",
+    ...s.photos.map((p, i) => `Photo ${i + 1} (${p.type}): ${p.url}`),
+    s.video_url ? `Video: ${s.video_url}` : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -83,8 +87,8 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
       estimated_market: input.estimated_market,
       estimated_offer: input.estimated_offer,
       other_offer: input.other_offer ?? null,
-      photos: [],
-      video_url: null,
+      photos: input.photos,
+      video_url: input.video_url || null,
       address: input.address.trim(),
       lat: input.lat ?? null,
       lng: input.lng ?? null,
@@ -109,8 +113,8 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
     estimated_market: input.estimated_market,
     estimated_offer: input.estimated_offer,
     other_offer: input.other_offer ?? null,
-    photos: [],
-    video_url: null,
+    photos: input.photos,
+    video_url: input.video_url || null,
     address: input.address.trim(),
     lat: input.lat ?? null,
     lng: input.lng ?? null,

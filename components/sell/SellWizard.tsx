@@ -191,6 +191,13 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
     setError(null);
     setSubmitting(true);
     try {
+      const photoLinks: { type: string; url: string }[] = [];
+      for (const slot of PHOTO_SLOTS) {
+        const p = photos[slot.key];
+        if (p?.url) photoLinks.push({ type: slot.label, url: p.url });
+      }
+      const videoUrl = photos["video"]?.url || null;
+
       const res = await createSellRequest({
         customer_name: name.trim(),
         mobile,
@@ -204,6 +211,8 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         estimated_market: prices!.market,
         estimated_offer: effPrices!.offer,
         other_offer: otherVal > 0 ? otherVal : null,
+        photos: photoLinks,
+        video_url: videoUrl,
         address: location.address.trim(),
         lat: location.lat,
         lng: location.lng,
@@ -509,7 +518,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                 {otherVal > 0 ? <SummaryRow label="Other Exchange Offer" value={formatINR(otherVal)} /> : null}
                 <SummaryRow
                   label="Photos"
-                  value={`${Object.values(photos).filter((p) => p.file).length} selected — attach in WhatsApp`}
+                  value={`${Object.values(photos).filter((p) => p.file).length} selected — links go on WhatsApp`}
                 />
                 <SummaryRow label="Pickup Address" value={location.address} />
 
@@ -692,9 +701,9 @@ function SellSuccess({
           </h2>
           <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
             Your offer of <b className="text-emerald-700">{formatINR(offer)}</b> is locked in. The
-            full pickup details are already typed — press <b className="text-slate-700">Send</b>{" "}
-            and attach your appliance photos in the same chat. Our pickup partner will call you to
-            schedule the visit.
+            full details — including your photo &amp; video links — are already typed. Press{" "}
+            <b className="text-slate-700">Send</b> and our pickup partner will call you to schedule
+            the visit.
           </p>
           <a href={waUrl} target="_blank" rel="noopener" className="btn-wa mt-4 w-full !py-3.5">
             <WhatsAppIcon className="h-5 w-5 shrink-0" /> Details didn&apos;t open? Tap here
