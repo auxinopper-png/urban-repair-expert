@@ -2,6 +2,7 @@ import Hero from "@/components/home/Hero";
 import StatsBar from "@/components/home/StatsBar";
 import ServicesGrid from "@/components/home/ServicesGrid";
 import HowItWorks from "@/components/home/HowItWorks";
+import SellBanner from "@/components/home/SellBanner";
 import WhyUs from "@/components/home/WhyUs";
 import Testimonials from "@/components/home/Testimonials";
 import GoogleReviews from "@/components/home/GoogleReviews";
@@ -58,6 +59,7 @@ export default function HomePage() {
       <StatsBar />
       <ServicesGrid />
       <HowItWorks />
+      <SellBanner />
       <WhyUs />
       <Testimonials />
       <GoogleReviews />
