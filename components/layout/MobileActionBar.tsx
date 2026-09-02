@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Phone, Truck, X } from "lucide-react";
+import { Phone, Truck } from "lucide-react";
 import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import { telLink, waLink } from "@/lib/utils";
 
@@ -66,31 +65,27 @@ export default function MobileActionBar() {
 
 export function FloatingWhatsApp() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
   if (pathname.startsWith("/admin") || pathname.startsWith("/technician")) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 hidden flex-col items-center gap-3 lg:flex">
-      {open ? (
-        <a
-          href={telLink()}
-          aria-label="Call us"
-          className="animate-pop-in flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-xl shadow-brand-600/40 transition-transform hover:scale-110"
-        >
-          <Phone className="h-7 w-7" />
-        </a>
-      ) : null}
-      <button
-        onClick={() => setOpen(!open)}
-        aria-label={open ? "Close contact options" : "Chat on WhatsApp"}
-        aria-expanded={open}
+    <div className="fixed bottom-6 right-6 z-40 hidden items-center gap-3 lg:flex">
+      <a
+        href={telLink()}
+        aria-label="Call us"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-xl shadow-brand-600/30 transition-transform hover:scale-110"
+      >
+        <Phone className="h-7 w-7" />
+      </a>
+      <a
+        href={waLink(MSG)}
+        target="_blank"
+        rel="noopener"
+        aria-label="Chat on WhatsApp"
         className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl shadow-emerald-500/30 transition-transform hover:scale-110"
       >
-        {!open ? (
-          <span className="absolute inline-flex h-full w-full animate-ping-slow rounded-full bg-[#25D366]/60" />
-        ) : null}
-        {open ? <X className="relative h-7 w-7" /> : <WhatsAppIcon className="relative h-8 w-8" />}
-      </button>
+        <span className="absolute inline-flex h-full w-full animate-ping-slow rounded-full bg-[#25D366]/60" />
+        <WhatsAppIcon className="relative h-8 w-8" />
+      </a>
     </div>
   );
 }
