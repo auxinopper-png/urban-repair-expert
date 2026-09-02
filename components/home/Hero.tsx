@@ -1,5 +1,18 @@
 import Link from "next/link";
-import { ArrowRight, Snowflake, Wrench, BadgeCheck } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Camera,
+  Clock3,
+  IndianRupee,
+  ShieldCheck,
+  Snowflake,
+  Truck,
+  Wallet,
+  Wind,
+  Wrench,
+  Zap,
+} from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { SERVICES } from "@/lib/services-data";
 
@@ -19,6 +32,7 @@ export default function Hero() {
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white px-4 py-1.5 text-xs font-bold text-brand-700 shadow-sm">
+              <Clock3 className="h-3.5 w-3.5" />
               Same-Day Doorstep Service · 180-Day Warranty
             </span>
           </Reveal>
@@ -36,103 +50,122 @@ export default function Hero() {
           </Reveal>
           <Reveal delay={0.16}>
             <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-slate-500 sm:text-base">
-              Expert repair for AC, refrigerator, washing machine & geyser — plus the best-value
-              buyback for your old appliances. Booked in under 60 seconds.
+              Expert repair for AC, refrigerator, washing machine &amp; geyser — plus the
+              best-value buyback for your old appliances. Booked in under 60 seconds.
             </p>
           </Reveal>
         </div>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-2 lg:gap-6">
+        <div className="mt-10 grid gap-4 lg:grid-cols-2 lg:gap-5">
+          {/* ── BOOK REPAIR ─────────────────────────────── */}
           <Reveal delay={0.1}>
-            <div className="group relative h-full overflow-hidden rounded-[28px] border border-slate-100 bg-white p-6 shadow-card transition hover:-translate-y-1 hover:shadow-glow sm:p-8">
-              <div className="absolute right-0 top-0 h-36 w-36 rounded-bl-[80px] bg-brand-50" aria-hidden />
-              <div className="relative">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30">
-                    <Wrench className="h-7 w-7" />
+            <Link
+              href="/book"
+              className="group flex h-full flex-col rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-glow sm:p-8"
+            >
+              <div className="flex items-center justify-between">
+                <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30">
+                  <Wrench className="h-6.5 w-6.5" />
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-extrabold text-emerald-700">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                   </span>
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                    Available Today
-                  </span>
-                </div>
-                <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-900">
-                  Book Repair Service
-                </h2>
-                <p className="mt-1.5 text-sm text-slate-500">
-                  Certified experts at your doorstep, often within 2–4 hours.
-                </p>
-
-                <ul className="mt-5 grid grid-cols-2 gap-2.5">
-                  {SERVICES.map((s) => (
-                    <li
-                      key={s.id}
-                      className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-2.5 text-[13px] font-semibold text-slate-700"
-                    >
-                      <BadgeCheck className="h-4 w-4 shrink-0 text-brand-600" />
-                      {s.short}
-                    </li>
-                  ))}
-                </ul>
-
-                <ul className="mt-4 space-y-1.5 text-[13px] text-slate-500">
-                  <li className="flex items-center gap-2">Genuine spare parts with warranty</li>
-                  <li className="flex items-center gap-2">Fair pricing · Pay after service</li>
-                </ul>
-
-                <Link href="/book" className="btn-primary mt-6 w-full !py-4 text-base group-hover:!bg-brand-700">
-                  Book Service Now <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
+                  Available Today
+                </span>
               </div>
-            </div>
+
+              <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-900">
+                Book Repair Service
+              </h2>
+              <p className="mt-1 text-sm leading-relaxed text-slate-500">
+                Verified experts at your doorstep, often within 2–4 hours. Pay only after the job
+                is done.
+              </p>
+
+              <ul className="mt-5 space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+                {SERVICES.map((s) => (
+                  <li key={s.id} className="flex items-center gap-2.5">
+                    <BadgeCheck className="h-4.5 w-4.5 shrink-0 text-brand-600" />
+                    {s.label}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto pt-6">
+                <span className="btn-primary w-full !py-4 text-base group-hover:!bg-brand-700">
+                  Book Repair Now
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </span>
+                <p className="mt-3 flex items-center justify-center gap-3 text-[11px] font-bold text-slate-400">
+                  <span className="inline-flex items-center gap-1">
+                    <ShieldCheck className="h-3.5 w-3.5 text-brand-500" /> 180-Day Warranty
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <IndianRupee className="h-3.5 w-3.5 text-brand-500" /> Transparent Price
+                  </span>
+                </p>
+              </div>
+            </Link>
           </Reveal>
 
+          {/* ── SELL NOW ────────────────────────────────── */}
           <Reveal delay={0.18}>
-            <div className="group relative h-full overflow-hidden rounded-[28px] border border-amber-100 bg-gradient-to-br from-slate-950 via-brand-950 to-slate-900 p-6 text-white shadow-glow transition hover:-translate-y-1 sm:p-8">
+            <Link
+              href="/sell"
+              className="group relative flex h-full flex-col overflow-hidden rounded-[28px] border border-amber-200/60 bg-gradient-to-br from-slate-950 via-brand-950 to-slate-900 p-6 text-white shadow-glow transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-8"
+            >
               <div
-                className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 animate-float rounded-full bg-amber-400/20 blur-2xl"
                 aria-hidden
+                className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 animate-float rounded-full bg-amber-400/20 blur-2xl"
               />
-              <div className="relative">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/30">
-                    <Snowflake className="h-7 w-7" />
+              <div className="relative flex items-center justify-between">
+                <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/30">
+                  <Snowflake className="h-6.5 w-6.5" />
+                </span>
+                <span className="rounded-full bg-amber-400/15 px-3 py-1.5 text-[11px] font-extrabold text-amber-300 ring-1 ring-inset ring-amber-400/30">
+                  Up to 20% Higher Offer
+                </span>
+              </div>
+
+              <h2 className="relative mt-5 text-2xl font-extrabold tracking-tight">
+                Sell Old AC &amp; Refrigerator
+              </h2>
+              <p className="relative mt-1 text-sm leading-relaxed text-slate-300">
+                Get a live price estimate in under a minute — better than any exchange offer.
+              </p>
+
+              <ul className="relative mt-5 space-y-2.5 text-[13.5px] font-semibold text-slate-200">
+                <li className="flex items-center gap-2.5">
+                  <Zap className="h-4.5 w-4.5 shrink-0 text-amber-400" />
+                  Live price estimation — instant quote
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <Truck className="h-4.5 w-4.5 shrink-0 text-amber-400" />
+                  Free doorstep pickup, on your schedule
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <Wallet className="h-4.5 w-4.5 shrink-0 text-amber-400" />
+                  Instant payment — UPI or cash on the spot
+                </li>
+              </ul>
+
+              <div className="relative mt-auto pt-6">
+                <span className="btn-accent w-full !py-4 text-base group-hover:!bg-amber-300">
+                  Sell Now — Get Best Price
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </span>
+                <p className="mt-3 flex items-center justify-center gap-3 text-[11px] font-bold text-slate-400">
+                  <span className="inline-flex items-center gap-1">
+                    <Camera className="h-3.5 w-3.5 text-amber-400/80" /> 60-Second Quote
                   </span>
-                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-amber-300 backdrop-blur">
-                    Up to 20% Higher Offer*
+                  <span className="inline-flex items-center gap-1">
+                    <Wind className="h-3.5 w-3.5 text-amber-400/80" /> AC &amp; Fridge
                   </span>
-                </div>
-                <h2 className="mt-5 text-2xl font-extrabold tracking-tight">
-                  Sell Old AC & Refrigerator
-                </h2>
-                <p className="mt-1.5 text-sm text-slate-300">
-                  Premium buyback with live price estimation — like an exchange, only better.
-                </p>
-
-                <ul className="mt-5 grid grid-cols-2 gap-2.5">
-                  {["Best Price", "Free Pickup", "Instant Payment", "Live Estimation"].map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-center gap-2 rounded-xl bg-white/[0.07] px-3 py-2.5 text-[13px] font-semibold text-slate-100 ring-1 ring-inset ring-white/10"
-                    >
-                      <BadgeCheck className="h-4 w-4 shrink-0 text-amber-400" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <ul className="mt-4 space-y-1.5 text-[13px] text-slate-400">
-                  <li className="flex items-center gap-2">Photo upload + GPS pickup scheduling</li>
-                  <li className="flex items-center gap-2">UPI / cash payment on the spot</li>
-                </ul>
-
-                <Link href="/sell" className="btn-accent mt-6 w-full !py-4 text-base">
-                  Sell Now <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-                <p className="mt-3 text-center text-[11px] text-slate-500">
-                  *Estimated comparison vs standard exchange values. Final offer after inspection.
                 </p>
               </div>
-            </div>
+            </Link>
           </Reveal>
         </div>
       </div>

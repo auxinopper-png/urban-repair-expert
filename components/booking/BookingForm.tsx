@@ -21,7 +21,6 @@ import {
 import { createBooking } from "@/app/actions/bookings";
 import LocationPicker, { type LocationValue } from "@/components/forms/LocationPicker";
 import { getRecaptchaToken } from "@/lib/recaptcha";
-import { uploadToBucket } from "@/lib/upload";
 import { SERVICES, BRANDS_BY_APPLIANCE } from "@/lib/services-data";
 import { SITE, TIME_SLOTS } from "@/lib/config";
 import { cn, todayISO, prettyDate, telLink } from "@/lib/utils";
@@ -51,8 +50,6 @@ export default function BookingForm() {
   const [slot, setSlot] = useState(TIME_SLOTS[0]);
   const [location, setLocation] = useState<LocationValue>({ address: "", lat: null, lng: null });
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [photoUploading, setPhotoUploading] = useState(false);
   const [website, setWebsite] = useState("");
 
   useEffect(() => {
@@ -71,21 +68,9 @@ export default function BookingForm() {
     );
   }
 
-  async function pickPhoto(f: File | undefined | null) {
+  function pickPhoto(f: File | undefined | null) {
     if (!f) return;
-    if (f.size > 10 * 1024 * 1024) {
-      window.alert("Photo too large — max 10 MB. Please choose a smaller photo.");
-      return;
-    }
     setPhotoPreview(URL.createObjectURL(f));
-    setPhotoUploading(true);
-    try {
-      const url = await uploadToBucket(f, "bookings");
-      setPhotoUrl(url);
-    } catch {
-      setPhotoUrl(null);
-    }
-    setPhotoUploading(false);
   }
 
   const [errors, setErrors] = useState<string[]>([]);
@@ -158,7 +143,6 @@ export default function BookingForm() {
         address: location.address.trim(),
         lat: location.lat,
         lng: location.lng,
-        photo_url: photoUrl,
         website,
         recaptcha_token: await getRecaptchaToken("booking"),
       });
@@ -470,34 +454,23 @@ export default function BookingForm() {
                         <Image src={photoPreview} alt="Issue" fill unoptimized className="object-cover" />
                       </div>
                     ) : (
-                      <label
-                        className={cn(
-                          "flex h-20 w-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed bg-slate-50 text-slate-400 transition hover:border-brand-400 hover:text-brand-600",
-                          photoUploading ? "border-brand-300" : "border-slate-200"
-                        )}
-                      >
+                      <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 text-slate-400 transition hover:border-brand-400 hover:text-brand-600">
                         <input
                           type="file"
                           accept="image/*"
                           className="hidden"
                           onChange={(e) => pickPhoto(e.target.files?.[0])}
                         />
-                        {photoUploading ? (
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                          <>
-                            <svg viewBox="0 0 24 24" className="h-6 w-6 fill-none stroke-current" strokeWidth="1.8">
-                              <path d="M4 7h3l2-3h6l2 3h3v13H4V7z" strokeLinejoin="round" />
-                              <circle cx="12" cy="13" r="3.5" />
-                            </svg>
-                            <span className="text-[10px] font-bold">Add Photo</span>
-                          </>
-                        )}
+                        <svg viewBox="0 0 24 24" className="h-6 w-6 fill-none stroke-current" strokeWidth="1.8">
+                          <path d="M4 7h3l2-3h6l2 3h3v13H4V7z" strokeLinejoin="round" />
+                          <circle cx="12" cy="13" r="3.5" />
+                        </svg>
+                        <span className="text-[10px] font-bold">Add Photo</span>
                       </label>
                     )}
                     <p className="text-xs leading-relaxed text-slate-400">
-                      Choose from camera or gallery. The photo link is sent to our team on
-                      WhatsApp automatically along with your booking details.
+                      Choose from camera or gallery. After booking, attach this photo directly in
+                      the WhatsApp chat — nothing is uploaded to our servers.
                     </p>
                   </div>
                 </div>

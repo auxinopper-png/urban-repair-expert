@@ -18,7 +18,6 @@ export interface BookingInput {
   address: string;
   lat?: number | null;
   lng?: number | null;
-  photo_url?: string | null;
   website?: string;
   recaptcha_token?: string;
 }
@@ -42,7 +41,7 @@ function buildBookingText(code: string, b: BookingInput) {
     `Preferred Visit: ${prettyDate(b.preferred_date)}, ${b.preferred_slot}`,
     `Address: ${b.address}`,
     b.lat != null && b.lng != null ? `GPS Location: ${mapsLink(b.lat, b.lng)}` : "",
-    b.photo_url ? `Photo: ${b.photo_url}` : "",
+    "Photos: attached in this chat",
   ]
     .filter(Boolean)
     .join("\n");
@@ -81,7 +80,7 @@ export async function createBooking(input: BookingInput): Promise<BookingResult>
       address: input.address.trim(),
       lat: input.lat ?? null,
       lng: input.lng ?? null,
-      photo_url: input.photo_url || null,
+      photo_url: null,
       status: "pending",
       technician_id: null,
       admin_note: null,
@@ -103,7 +102,7 @@ export async function createBooking(input: BookingInput): Promise<BookingResult>
     address: input.address.trim(),
     lat: input.lat ?? null,
     lng: input.lng ?? null,
-    photo_url: input.photo_url || null,
+    photo_url: null,
     status: "pending",
   });
 

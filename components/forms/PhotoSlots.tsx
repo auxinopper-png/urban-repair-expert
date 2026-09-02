@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { Camera, Loader2, Trash2, Video } from "lucide-react";
-import { uploadToBucket } from "@/lib/upload";
+import { useRef } from "react";
+import { Camera, Trash2, Video } from "lucide-react";
 
 export interface SlotDef {
   key: string;
@@ -15,8 +14,6 @@ export interface SlotDef {
 export interface PhotoSlot {
   file: File | null;
   preview: string | null;
-  url: string | null;
-  uploading: boolean;
 }
 
 const MAX_IMAGE_MB = 10;
@@ -32,32 +29,24 @@ export default function PhotoSlots({
   onChange: (key: string, slot: PhotoSlot) => void;
 }) {
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
-  const [sizeError, setSizeError] = useState<string | null>(null);
 
-  async function pick(key: string, file: File | undefined | null) {
+  function pick(key: string, file: File | undefined | null) {
     if (!file) return;
     const isVideo = file.type.startsWith("video/");
     const maxMB = isVideo ? MAX_VIDEO_MB : MAX_IMAGE_MB;
     if (file.size > maxMB * 1024 * 1024) {
-      setSizeError(`File too large — max ${maxMB} MB for ${isVideo ? "videos" : "photos"}.`);
+      window.alert(`File too large — max ${maxMB} MB for ${isVideo ? "videos" : "photos"}.`);
       if (inputRefs.current[key]) inputRefs.current[key]!.value = "";
       return;
     }
-    setSizeError(null);
-    onChange(key, { file, preview: URL.createObjectURL(file), url: null, uploading: true });
-    try {
-      const url = await uploadToBucket(file, "sell");
-      onChange(key, { file, preview: URL.createObjectURL(file), url, uploading: false });
-    } catch {
-      onChange(key, { file, preview: URL.createObjectURL(file), url: null, uploading: false });
-    }
+    onChange(key, { file, preview: URL.createObjectURL(file) });
   }
 
   return (
     <div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {slots.map((slot) => {
-          const cur = value[slot.key] ?? { file: null, preview: null, url: null, uploading: false };
+          const cur = value[slot.key] ?? { file: null, preview: null };
           return (
             <div key={slot.key}>
               <input
@@ -82,16 +71,11 @@ export default function PhotoSlots({
                       className="object-cover"
                     />
                   )}
-                  {cur.uploading ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                      <Loader2 className="h-6 w-6 animate-spin text-white" />
-                    </div>
-                  ) : null}
                   <button
                     type="button"
                     onClick={() => {
                       if (inputRefs.current[slot.key]) inputRefs.current[slot.key]!.value = "";
-                      onChange(slot.key, { file: null, preview: null, url: null, uploading: false });
+                      onChange(slot.key, { file: null, preview: null });
                     }}
                     className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-rose-600 shadow"
                     aria-label={`Remove ${slot.label}`}
@@ -120,12 +104,9 @@ export default function PhotoSlots({
         })}
       </div>
       <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
-        Pick from camera or gallery — photos &amp; video links are sent to our team on WhatsApp
-        automatically with your details.
+        Pick from camera or gallery — after sending the details on WhatsApp, attach these photos
+        &amp; video directly in the same chat. Nothing is uploaded to our servers.
       </p>
-      {sizeError ? (
-        <p className="mt-1.5 text-[11px] font-semibold text-rose-600">{sizeError}</p>
-      ) : null}
     </div>
   );
 }
