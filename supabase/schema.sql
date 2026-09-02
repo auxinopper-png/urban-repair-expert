@@ -305,7 +305,6 @@ security definer
 set search_path = public
 as $$
 declare
-  digits text := regexp_replace(coalesce(q, ''), '\D', '', 'g');
   likeq text := '%' || coalesce(q, '') || '%';
 begin
   return query
@@ -320,7 +319,7 @@ begin
     null::integer,
     b.created_at
   from public.bookings b
-  where b.booking_code ilike likeq or (length(digits) = 10 and b.mobile = digits)
+  where b.booking_code ilike likeq
   limit 5;
 
   return query
@@ -335,7 +334,7 @@ begin
     s.estimated_offer,
     s.created_at
   from public.sell_requests s
-  where s.request_code ilike likeq or (length(digits) = 10 and s.mobile = digits)
+  where s.request_code ilike likeq
   limit 5;
 end;
 $$;

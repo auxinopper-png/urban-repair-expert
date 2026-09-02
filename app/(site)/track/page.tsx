@@ -17,7 +17,7 @@ export default function TrackPage() {
             Where's my <span className="text-brand-600">technician?</span>
           </h1>
           <p className="mx-auto mt-2 max-w-md text-[15px] text-slate-500">
-            Enter your Booking ID or mobile number for live status.
+            Enter your Booking ID or Pickup ID for live status — no other details needed.
           </p>
         </div>
         <TrackForm />

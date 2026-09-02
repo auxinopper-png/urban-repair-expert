@@ -611,11 +611,14 @@ function SuccessScreen({
           </a>
         </div>
 
-        <div className="mt-6">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-            Booking ID — keep this for tracking
+        <div className="mt-6 rounded-2xl bg-brand-50 px-5 py-4 ring-1 ring-brand-100">
+          <p className="text-[11px] font-extrabold uppercase tracking-widest text-brand-600">
+            Your Tracking ID
           </p>
-          <p className="mt-1 text-2xl font-extrabold tracking-wide text-brand-800">{code}</p>
+          <p className="mt-1 text-3xl font-black tracking-wider text-brand-900">{code}</p>
+          <p className="mt-1.5 text-[11px] font-semibold text-slate-500">
+            Save this — track your booking anytime on the Track page with just this ID.
+          </p>
         </div>
 
         <a href={telLink()} className="btn-outline mt-6 w-full !py-3.5">

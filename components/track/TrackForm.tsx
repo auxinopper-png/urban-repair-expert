@@ -48,7 +48,7 @@ export default function TrackForm() {
           <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
           <input
             className="field !pl-12"
-            placeholder="Booking ID or mobile number"
+            placeholder="e.g. URE-250902-XY7Z or SELL-250902-AB12"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -64,8 +64,8 @@ export default function TrackForm() {
           animate={{ opacity: 1 }}
           className="mt-8 rounded-2xl bg-slate-50 p-6 text-center text-sm font-medium text-slate-500"
         >
-          No bookings found for “{query}”. Double-check the ID or try your registered mobile
-          number — or WhatsApp us and we'll find it instantly.
+          No bookings found for “{query}”. Double-check the ID — or WhatsApp us and we'll find it
+          instantly.
         </motion.p>
       ) : (
         <div className="mt-8 space-y-5">
