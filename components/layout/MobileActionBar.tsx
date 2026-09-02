@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Phone, Wrench } from "lucide-react";
+import { Phone, Truck } from "lucide-react";
 import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import { telLink, waLink } from "@/lib/utils";
 
@@ -12,14 +11,42 @@ export default function MobileActionBar() {
   const pathname = usePathname();
   if (pathname.startsWith("/admin") || pathname.startsWith("/technician")) return null;
 
-  const onSell = pathname === "/sell";
+  if (pathname === "/sell") {
+    return (
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-xl lg:hidden">
+        <div className="grid grid-cols-3 pb-safe">
+          <a
+            href={telLink()}
+            className="flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-bold text-slate-600 active:text-brand-700"
+          >
+            <Phone className="h-5 w-5" /> Call Now
+          </a>
+          <a
+            href={waLink(MSG)}
+            target="_blank"
+            rel="noopener"
+            className="flex flex-col items-center justify-center gap-1 border-x border-slate-100 py-2.5 text-[11px] font-bold text-emerald-600"
+          >
+            <WhatsAppIcon className="h-5 w-5" /> WhatsApp
+          </a>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("ure:accept-offer"))}
+            className="flex flex-col items-center justify-center gap-0.5 bg-amber-500 px-1 py-2.5 text-[10px] font-extrabold leading-tight text-white active:bg-amber-600"
+          >
+            <Truck className="h-5 w-5" />
+            Accept Offer &amp; Schedule Pickup
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-xl lg:hidden">
-      <div className="grid grid-cols-3 pb-safe">
+      <div className="grid grid-cols-2 pb-safe">
         <a
           href={telLink()}
-          className="flex flex-col items-center gap-1 py-2.5 text-[11px] font-bold text-slate-600 active:text-brand-700"
+          className="flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-bold text-slate-600 active:text-brand-700"
         >
           <Phone className="h-5 w-5" /> Call Now
         </a>
@@ -27,17 +54,10 @@ export default function MobileActionBar() {
           href={waLink(MSG)}
           target="_blank"
           rel="noopener"
-          className="flex flex-col items-center gap-1 border-x border-slate-100 py-2.5 text-[11px] font-bold text-emerald-600"
+          className="flex flex-col items-center justify-center gap-1 border-l border-slate-100 py-2.5 text-[11px] font-bold text-emerald-600"
         >
           <WhatsAppIcon className="h-5 w-5" /> WhatsApp
         </a>
-        <Link
-          href={onSell ? "/book" : "/sell"}
-          className="flex flex-col items-center gap-1 bg-brand-600 py-2.5 text-[11px] font-bold text-white active:bg-brand-700"
-        >
-          <Wrench className="h-5 w-5" />
-          {onSell ? "Book Repair" : "Get Offer"}
-        </Link>
       </div>
     </div>
   );

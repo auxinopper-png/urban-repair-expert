@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { Camera, Loader2, Trash2, Video } from "lucide-react";
-import { uploadToBucket } from "@/lib/upload";
 
 export interface SlotDef {
   key: string;
@@ -29,15 +28,9 @@ export default function PhotoSlots({
 }) {
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
-  async function pick(key: string, file: File | undefined | null) {
+  function pick(key: string, file: File | undefined | null) {
     if (!file) return;
-    onChange(key, { file, preview: URL.createObjectURL(file), uploading: true });
-    try {
-      await uploadToBucket(file, "sell");
-      onChange(key, { file, preview: URL.createObjectURL(file), uploading: false });
-    } catch {
-      onChange(key, { file, preview: URL.createObjectURL(file), uploading: false });
-    }
+    onChange(key, { file, preview: URL.createObjectURL(file), uploading: false });
   }
 
   return (

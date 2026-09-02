@@ -118,7 +118,7 @@ export default function SellClient({
                     ₹{Number(r.estimated_offer || 0).toLocaleString("en-IN")}
                   </p>
                   <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
-                    mkt ₹{Number(r.estimated_market || 0).toLocaleString("en-IN")}
+                    Exchange ₹{Number(r.estimated_market || 0).toLocaleString("en-IN")}
                     {r.other_offer ? ` · other ₹${Number(r.other_offer).toLocaleString("en-IN")}` : ""}
                   </p>
                 </div>
@@ -176,7 +176,7 @@ export default function SellClient({
                   </p>
                 </div>
                 <div className="pb-1 text-right text-xs text-slate-500">
-                  <p className="line-through">mkt ₹{Number(selected.estimated_market || 0).toLocaleString("en-IN")}</p>
+                  <p className="line-through">Exchange ₹{Number(selected.estimated_market || 0).toLocaleString("en-IN")}</p>
                   <p className="font-bold text-emerald-600">
                     +{Math.round(((selected.estimated_offer - selected.estimated_market) / Math.max(1, selected.estimated_market)) * 100)}%
                     higher

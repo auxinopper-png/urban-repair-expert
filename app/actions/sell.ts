@@ -2,8 +2,7 @@
 
 import { getServerSupabase } from "@/lib/supabase/server";
 import { genCode, formatINR, mapsLink } from "@/lib/utils";
-import { notifyWebhook, verifyRecaptcha } from "@/lib/auth";
-import type { SellPhoto } from "@/lib/services-data";
+import { verifyRecaptcha } from "@/lib/auth";
 
 export interface SellInput {
   customer_name: string;
@@ -18,8 +17,6 @@ export interface SellInput {
   estimated_market: number;
   estimated_offer: number;
   other_offer?: number | null;
-  photos: SellPhoto[];
-  video_url?: string | null;
   address: string;
   lat?: number | null;
   lng?: number | null;
@@ -31,20 +28,24 @@ export interface SellResult {
   ok: boolean;
   error?: string;
   code?: string;
-  fallback_text?: string;
+  whatsapp_text?: string;
 }
 
-function summaryText(code: string, s: SellInput) {
+function buildSellText(code: string, s: SellInput) {
   return [
-    `New Sell Pickup Request ${code}`,
+    `NEW SELL PICKUP REQUEST — ${code}`,
+    "",
     `Name: ${s.customer_name}`,
     `Mobile: ${s.mobile}`,
     `Appliance: ${s.appliance_label} — ${s.brand_name} ${s.model_name} (${s.capacity_label})`,
-    `Age: ${s.age_label} · Condition: ${s.condition_label}`,
-    `Est. Value: ${formatINR(s.estimated_market)} → Our Offer: ${formatINR(s.estimated_offer)}`,
+    `Age: ${s.age_label}`,
+    `Condition: ${s.condition_label}`,
+    `Standard Exchange Value: ${formatINR(s.estimated_market)}`,
+    `Our Offer: ${formatINR(s.estimated_offer)}`,
+    s.other_offer ? `Other Exchange Offer: ${formatINR(s.other_offer)}` : "",
     `Address: ${s.address}`,
-    s.lat && s.lng ? `Location: ${mapsLink(s.lat, s.lng)}` : "",
-    s.photos.length ? `Photos: ${s.photos.map((p) => p.url).join(", ")}` : "",
+    s.lat != null && s.lng != null ? `GPS Location: ${mapsLink(s.lat, s.lng)}` : "",
+    "Photos & video: customer will attach in this chat",
   ]
     .filter(Boolean)
     .join("\n");
@@ -62,6 +63,7 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
 
   const sb = await getServerSupabase();
   const code = genCode("SELL");
+  const text = buildSellText(code, input);
 
   if (!sb) {
     const { getDemoStore } = await import("@/lib/demo-store");
@@ -81,8 +83,8 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
       estimated_market: input.estimated_market,
       estimated_offer: input.estimated_offer,
       other_offer: input.other_offer ?? null,
-      photos: input.photos,
-      video_url: input.video_url || null,
+      photos: [],
+      video_url: null,
       address: input.address.trim(),
       lat: input.lat ?? null,
       lng: input.lng ?? null,
@@ -91,8 +93,7 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
       technician_id: null,
       admin_note: null,
     });
-    notifyWebhook({ type: "sell_request", code, ...input });
-    return { ok: true, code, fallback_text: summaryText(code, input) };
+    return { ok: true, code, whatsapp_text: text };
   }
 
   const { error } = await sb.from("sell_requests").insert({
@@ -108,8 +109,8 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
     estimated_market: input.estimated_market,
     estimated_offer: input.estimated_offer,
     other_offer: input.other_offer ?? null,
-    photos: input.photos,
-    video_url: input.video_url || null,
+    photos: [],
+    video_url: null,
     address: input.address.trim(),
     lat: input.lat ?? null,
     lng: input.lng ?? null,
@@ -117,9 +118,8 @@ export async function createSellRequest(input: SellInput): Promise<SellResult> {
   });
 
   if (error) {
-    return { ok: true, code, fallback_text: summaryText(code, input) };
+    return { ok: true, code, whatsapp_text: text };
   }
 
-  notifyWebhook({ type: "sell_request", code, ...input });
-  return { ok: true, code };
+  return { ok: true, code, whatsapp_text: text };
 }

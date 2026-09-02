@@ -12,7 +12,6 @@ import {
   CheckCircle2,
   Clock3,
   Loader2,
-  MapPin,
   PartyPopper,
   Phone,
   ShieldCheck,
@@ -22,7 +21,6 @@ import {
 import { createBooking } from "@/app/actions/bookings";
 import LocationPicker, { type LocationValue } from "@/components/forms/LocationPicker";
 import { getRecaptchaToken } from "@/lib/recaptcha";
-import { uploadToBucket } from "@/lib/upload";
 import { SERVICES, BRANDS_BY_APPLIANCE } from "@/lib/services-data";
 import { SITE, TIME_SLOTS } from "@/lib/config";
 import { cn, todayISO, prettyDate, telLink } from "@/lib/utils";
@@ -39,8 +37,7 @@ export default function BookingForm() {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [photoUploading, setPhotoUploading] = useState(false);
-  const [result, setResult] = useState<{ code: string; fallback_text?: string } | null>(null);
+  const [result, setResult] = useState<{ code: string; whatsapp_text?: string } | null>(null);
 
   const [appliance, setAppliance] = useState<string>("");
   const [brand, setBrand] = useState("");
@@ -72,15 +69,10 @@ export default function BookingForm() {
     );
   }
 
-  async function pickPhoto(f: File | undefined | null) {
+  function pickPhoto(f: File | undefined | null) {
     if (!f) return;
     setPhotoFile(f);
     setPhotoPreview(URL.createObjectURL(f));
-    setPhotoUploading(true);
-    try {
-      await uploadToBucket(f, "bookings");
-    } catch {}
-    setPhotoUploading(false);
   }
 
   const [errors, setErrors] = useState<string[]>([]);
@@ -139,10 +131,6 @@ export default function BookingForm() {
     if (!svc) return;
     setSubmitting(true);
     try {
-      let photoUrl: string | null = null;
-      if (photoFile) {
-        photoUrl = await uploadToBucket(photoFile, "bookings");
-      }
       const res = await createBooking({
         customer_name: name.trim(),
         mobile,
@@ -157,14 +145,13 @@ export default function BookingForm() {
         address: location.address.trim(),
         lat: location.lat,
         lng: location.lng,
-        photo_url: photoUrl,
         website,
         recaptcha_token: await getRecaptchaToken("booking"),
       });
       if (!res.ok) {
         setError(res.error || "Something went wrong. Please try again or call us.");
       } else {
-        setResult({ code: res.code!, fallback_text: res.fallback_text });
+        setResult({ code: res.code!, whatsapp_text: res.whatsapp_text });
       }
     } catch {
       setError("Network error. Please check your connection and try again.");
@@ -174,7 +161,7 @@ export default function BookingForm() {
   }
 
   if (result) {
-    return <SuccessScreen code={result.code} fallbackText={result.fallback_text} />;
+    return <SuccessScreen code={result.code} whatsappText={result.whatsapp_text} />;
   }
 
   return (
@@ -461,7 +448,7 @@ export default function BookingForm() {
 
                 <div>
                   <label className="label-text">
-                    Upload a Photo <span className="font-normal text-slate-400">(optional)</span>
+                    Add a Photo <span className="font-normal text-slate-400">(optional)</span>
                   </label>
                   <div className="flex items-center gap-4">
                     {photoPreview ? (
@@ -485,8 +472,8 @@ export default function BookingForm() {
                       </label>
                     )}
                     <p className="text-xs leading-relaxed text-slate-400">
-                      A quick snap of the appliance helps our technician arrive prepared with the
-                      right tools & parts.
+                      A quick snap helps our technician arrive prepared. After booking, attach it
+                      in the WhatsApp chat — nothing is uploaded or stored on our servers.
                     </p>
                   </div>
                 </div>
@@ -545,7 +532,7 @@ export default function BookingForm() {
             ) : (
               <button
                 type="button"
-                disabled={submitting || photoUploading}
+                disabled={submitting}
                 onClick={() => {
                   if (tryContinue()) submit();
                 }}
@@ -571,12 +558,24 @@ export default function BookingForm() {
 
 function SuccessScreen({
   code,
-  fallbackText,
+  whatsappText,
 }: {
   code: string;
-  fallbackText?: string;
+  whatsappText?: string;
 }) {
-  const waConfirm = `Hi ${SITE.name}! I just booked a repair online.%0A%0ABooking ID: ${code}%0APlease confirm my booking.`;
+  const waConfirm = `Hi ${SITE.name}! I just booked a repair online.\n\nBooking ID: ${code}\nPlease confirm my booking.`;
+  const waUrl = whatsappText
+    ? `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(whatsappText)}`
+    : `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(waConfirm)}`;
+  const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setOpened(true);
+      window.location.assign(waUrl);
+    }, 800);
+    return () => clearTimeout(t);
+  }, [waUrl]);
 
   return (
     <motion.div
@@ -584,56 +583,44 @@ function SuccessScreen({
       animate={{ opacity: 1, scale: 1 }}
       className="mx-auto max-w-lg text-center"
     >
-      <div className="card p-8 sm:p-10">
-        <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.15, type: "spring", stiffness: 260, damping: 16 }}
-          className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100"
-        >
-          <PartyPopper className="h-12 w-12 text-emerald-600" />
-        </motion.span>
-        <h2 className="mt-6 text-2xl font-extrabold tracking-tight">Booking Confirmed!</h2>
-        <p className="mt-2 text-[15px] text-slate-500">
-          Our team will call you shortly to confirm your slot.
-        </p>
-        <div className="mx-auto mt-6 w-fit rounded-2xl bg-brand-50 px-6 py-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-brand-500">Booking ID</p>
+      <div className="card p-6 sm:p-8">
+        <div className="rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 ring-1 ring-emerald-100">
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 16 }}
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-emerald-500/30"
+          >
+            <WhatsAppIcon className="h-8 w-8" />
+          </motion.span>
+          <h2 className="mt-4 text-xl font-extrabold tracking-tight text-slate-900">
+            {opened ? "WhatsApp opened — just press Send!" : "Opening WhatsApp with your details…"}
+          </h2>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+            Your full booking details are already typed in the message. Press{" "}
+            <b className="text-slate-700">Send</b> and attach your appliance photo in the same
+            chat — our team will confirm your slot instantly.
+          </p>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener"
+            className="btn-wa mt-4 w-full !py-3.5"
+          >
+            <WhatsAppIcon className="h-5 w-5 shrink-0" /> Details didn&apos;t open? Tap here
+          </a>
+        </div>
+
+        <div className="mt-6">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            Booking ID — keep this for tracking
+          </p>
           <p className="mt-1 text-2xl font-extrabold tracking-wide text-brand-800">{code}</p>
         </div>
 
-        <div className="mt-7 space-y-3">
-          <a
-            href={`https://wa.me/${SITE.whatsapp}?text=${waConfirm}`}
-            target="_blank"
-            rel="noopener"
-            className="btn-wa w-full !py-4"
-          >
-            <WhatsAppIcon className="h-5 w-5 shrink-0" /> Get Confirmation on WhatsApp
-          </a>
-          {fallbackText ? (
-            <p className="text-xs leading-relaxed text-slate-400">
-              Your request is saved. Tap above to receive instant confirmation on WhatsApp.
-            </p>
-          ) : (
-            <p className="text-xs leading-relaxed text-slate-400">
-              Confirmation sent to our dispatch team — you'll get WhatsApp updates with live
-              technician status.
-            </p>
-          )}
-          <div className="grid grid-cols-2 gap-3">
-            <a href={telLink()} className="btn-outline !py-3.5">
-              <Phone className="h-4 w-4" /> Call Us
-            </a>
-            <button
-              type="button"
-              onClick={() => window.location.assign("/track")}
-              className="btn-primary !py-3.5"
-            >
-              <MapPin className="h-4 w-4" /> Track Booking
-            </button>
-          </div>
-        </div>
+        <a href={telLink()} className="btn-outline mt-6 w-full !py-3.5">
+          <Phone className="h-4 w-4" /> Call Us Instead
+        </a>
       </div>
     </motion.div>
   );

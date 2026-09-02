@@ -1,18 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
   Info,
   Loader2,
-  MessageCircle,
   PartyPopper,
   Phone,
   Snowflake,
   TrendingUp,
-  WashingMachine,
   Wind,
 } from "lucide-react";
 import { createSellRequest } from "@/app/actions/sell";
@@ -20,8 +18,7 @@ import LocationPicker, { type LocationValue } from "@/components/forms/LocationP
 import PhotoSlots, { type PhotoSlot } from "@/components/forms/PhotoSlots";
 import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import { getRecaptchaToken } from "@/lib/recaptcha";
-import { uploadToBucket } from "@/lib/upload";
-import { computePrices, marketRange, type PricingTree } from "@/lib/pricing";
+import { computePrices, type PricingTree } from "@/lib/pricing";
 import { SITE } from "@/lib/config";
 import { cn, formatINR, telLink } from "@/lib/utils";
 
@@ -60,7 +57,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
   const [otherOffer, setOtherOffer] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ code: string; fallback_text?: string; offer: number; market: number } | null>(null);
+  const [result, setResult] = useState<{ code: string; whatsapp_text?: string; offer: number; market: number } | null>(null);
   const [website, setWebsite] = useState("");
 
   const brands = useMemo(
@@ -93,12 +90,28 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
     prices && otherVal > 0
       ? {
           market: prices.market,
-          offer: Math.max(prices.offer, Math.round((otherVal * (1 + tree.upliftPct / 100)) / 10) * 10),
+          offer: Math.max(prices.offer, Math.round(otherVal * (1 + tree.upliftPct / 100))),
         }
       : prices;
   const beatBy = effPrices && otherVal > 0 ? effPrices.offer - otherVal : 0;
 
-  const range = marketRange(appliance, selModel?.name ?? null, selCapacity?.label ?? null);
+  const pricesRef = useRef(prices);
+  pricesRef.current = prices;
+
+  useEffect(() => {
+    function onAcceptOffer() {
+      if (pricesRef.current) {
+        setStep(8);
+        requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+      } else {
+        document
+          .getElementById("sell-wizard")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+    window.addEventListener("ure:accept-offer", onAcceptOffer);
+    return () => window.removeEventListener("ure:accept-offer", onAcceptOffer);
+  }, []);
 
   function resetFrom(index: number) {
     if (index <= 1) {
@@ -131,6 +144,13 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         return ageId ? null : { key: "age", msg: "Please select the appliance age" };
       case 5:
         return conditionId ? null : { key: "condition", msg: "Please select the condition" };
+      case 6:
+        return photos["front"]?.file
+          ? null
+          : {
+              key: "photos",
+              msg: "Please upload a Front photo of your appliance to get your final offer",
+            };
       case 7:
         return location.address.trim().length >= 10
           ? null
@@ -139,6 +159,8 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         if (name.trim().length < 2) return { key: "sname", msg: "Please enter your name" };
         if (!/^[6-9]\d{9}$/.test(mobile.replace(/\D/g, "").slice(-10)))
           return { key: "smobile", msg: "Please enter a valid 10-digit mobile number" };
+        if (location.address.trim().length < 10)
+          return { key: "address", msg: "Please enter your complete doorstep address" };
         return null;
       }
       default:
@@ -149,6 +171,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
   function tryNext() {
     const err = validateStep(step);
     if (err) {
+      if (step === 8 && err.key === "address") setStep(7);
       setErrKey(err.key);
       setErrMsg(err.msg);
       requestAnimationFrame(() => {
@@ -168,19 +191,6 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
     setError(null);
     setSubmitting(true);
     try {
-      const photoUrls: { type: string; url: string }[] = [];
-      for (const slot of PHOTO_SLOTS.filter((s) => !s.video)) {
-        const p = photos[slot.key];
-        if (p?.file) {
-          const url = await uploadToBucket(p.file, "sell");
-          if (url) photoUrls.push({ type: slot.label, url });
-        }
-      }
-      let videoUrl: string | null = null;
-      if (photos["video"]?.file) {
-        videoUrl = await uploadToBucket(photos["video"].file, "sell");
-      }
-
       const res = await createSellRequest({
         customer_name: name.trim(),
         mobile,
@@ -194,8 +204,6 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         estimated_market: prices!.market,
         estimated_offer: effPrices!.offer,
         other_offer: otherVal > 0 ? otherVal : null,
-        photos: photoUrls,
-        video_url: videoUrl,
         address: location.address.trim(),
         lat: location.lat,
         lng: location.lng,
@@ -207,7 +215,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
       else
         setResult({
           code: res.code!,
-          fallback_text: res.fallback_text,
+          whatsapp_text: res.whatsapp_text,
           offer: effPrices!.offer,
           market: prices!.market,
         });
@@ -225,7 +233,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
   const progress = ((step + 1) / STEP_LABELS.length) * 100;
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div id="sell-wizard" className="mx-auto max-w-2xl">
       <div className="sticky top-[64px] z-30 -mx-4 mb-6 bg-white/90 px-4 py-3 backdrop-blur-lg sm:-mx-6 sm:px-6 lg:hidden">
         <div className="flex items-center justify-between text-xs font-bold text-slate-500">
           <span>
@@ -344,24 +352,8 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                   isErr("condition") && "outline outline-2 outline-rose-300"
                 )}
               >
-                {range && prices ? (
-                  <div className="rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
-                    <p className="text-xs font-bold text-slate-700">
-                      Amazon / Flipkart exchange range:{" "}
-                      <span className="text-slate-900">
-                        {formatINR(range.min)} – {formatINR(range.max)}
-                      </span>
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-slate-400">
-                      Typical online exchange values for this category
-                    </p>
-                  </div>
-                ) : null}
                 {tree.conditions.map((c) => {
                   const on = conditionId === c.id;
-                  const preview = selCapacity
-                    ? computePrices(selCapacity.base_value, selAge, c, tree.upliftPct)
-                    : null;
                   return (
                     <button
                       key={c.id}
@@ -386,16 +378,6 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                         <span className="block text-[15px] font-bold text-slate-900">{c.label}</span>
                         <span className="block truncate text-xs text-slate-400">{c.note}</span>
                       </span>
-                      {preview ? (
-                        <span className="shrink-0 text-right">
-                          <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                            Est.
-                          </span>
-                          <span className="text-sm font-extrabold text-emerald-600">
-                            {formatINR(preview.offer)}
-                          </span>
-                        </span>
-                      ) : null}
                     </button>
                   );
                 })}
@@ -403,13 +385,23 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
             ) : null}
 
             {step === 6 ? (
-              <>
+              <div
+                id="fld-photos"
+                className={cn("rounded-2xl", isErr("photos") && "outline outline-2 outline-rose-300")}
+              >
+                <p className="-mt-2 mb-3 text-sm text-slate-500">
+                  Front photo is required — clear photos help us confirm your final offer without
+                  re-negotiation at pickup.
+                </p>
                 <PhotoSlots
                   slots={PHOTO_SLOTS}
                   value={photos}
-                  onChange={(k, v) => setPhotos((p) => ({ ...p, [k]: v }))}
+                  onChange={(k, v) => {
+                    setPhotos((p) => ({ ...p, [k]: v }));
+                    if (k === "front") setErrKey(null);
+                  }}
                 />
-              </>
+              </div>
             ) : null}
 
             {step === 7 ? (
@@ -438,22 +430,37 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
             {step === 8 ? (
               <>
                 <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-5 ring-1 ring-emerald-100">
-                  <p className="text-xs font-bold uppercase tracking-widest text-emerald-600">
-                    Your Estimated Offer
+                  <p className="text-center text-xs font-bold uppercase tracking-widest text-emerald-600">
+                    Your Final Offer
                   </p>
-                  <div className="mt-1 flex items-end gap-3">
-                    <p className="text-4xl font-extrabold tracking-tight text-emerald-700">
-                      {effPrices ? formatINR(effPrices.offer) : "—"}
-                    </p>
-                    {prices ? (
-                      <p className="pb-1 text-sm text-slate-400 line-through">
-                        {formatINR(prices.market)}
+                  <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-center">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase leading-tight tracking-wide text-slate-500">
+                        Standard Exchange Value
                       </p>
-                    ) : null}
+                      <p className="mt-1 text-xl font-extrabold text-slate-500">
+                        {prices ? formatINR(prices.market) : "—"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <ArrowRight className="h-5 w-5 text-emerald-500" />
+                      <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-extrabold text-white">
+                        +{Math.round(tree.upliftPct)}%
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-extrabold uppercase leading-tight tracking-wide text-emerald-700">
+                        Urban Repair Expert
+                      </p>
+                      <p className="mt-1 text-3xl font-extrabold tracking-tight text-emerald-700">
+                        {effPrices ? formatINR(effPrices.offer) : "—"}
+                      </p>
+                    </div>
                   </div>
-                  <p className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
-                    <TrendingUp className="h-3.5 w-3.5" />
-                    Up to {Math.round(tree.upliftPct)}% higher than standard exchange · final offer after inspection
+                  <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-xs font-semibold text-emerald-700">
+                    <TrendingUp className="h-3.5 w-3.5 shrink-0" />
+                    {Math.round(tree.upliftPct)}% higher than standard exchange · final confirmation
+                    after inspection at pickup
                   </p>
                 </div>
 
@@ -475,7 +482,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                   {beatBy > 0 ? (
                     <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-xl bg-slate-50 p-3 text-center">
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Other Buyer</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Other Exchange Offer</p>
                         <p className="text-lg font-extrabold text-slate-500 line-through">{formatINR(otherVal)}</p>
                       </div>
                       <ArrowRight className="mx-auto h-4 w-4 text-slate-300" />
@@ -499,16 +506,10 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                 <SummaryRow label="Capacity" value={selCapacity?.label} />
                 <SummaryRow label="Age" value={selAge?.label} />
                 <SummaryRow label="Condition" value={selCondition?.label} />
-                {range ? (
-                  <SummaryRow
-                    label="Market Range"
-                    value={`${formatINR(range.min)} – ${formatINR(range.max)} (online exchanges)`}
-                  />
-                ) : null}
-                {otherVal > 0 ? <SummaryRow label="Other Offer" value={formatINR(otherVal)} /> : null}
+                {otherVal > 0 ? <SummaryRow label="Other Exchange Offer" value={formatINR(otherVal)} /> : null}
                 <SummaryRow
                   label="Photos"
-                  value={`${Object.values(photos).filter((p) => p.file).length} uploaded`}
+                  value={`${Object.values(photos).filter((p) => p.file).length} selected — attach in WhatsApp`}
                 />
                 <SummaryRow label="Pickup Address" value={location.address} />
 
@@ -585,7 +586,7 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
                 </>
               ) : step === 8 ? (
                 <>
-                  Book Free Pickup <ArrowRight className="h-5 w-5" />
+                  Accept Offer &amp; Schedule Pickup <ArrowRight className="h-5 w-5" />
                 </>
               ) : (
                 <>
@@ -597,42 +598,11 @@ export default function SellWizard({ tree }: { tree: PricingTree }) {
         </motion.div>
       </AnimatePresence>
 
-      {prices ? (
-        <motion.div
-          initial={{ y: 60, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="fixed inset-x-0 bottom-[76px] z-40 px-4 lg:bottom-6 lg:left-auto lg:right-6 lg:w-80 lg:px-0"
-        >
-          <div className="flex items-center gap-3 rounded-2xl bg-slate-950/95 p-4 text-white shadow-glow ring-1 ring-white/10 backdrop-blur">
-            <TrendingUp className="h-8 w-8 shrink-0 text-amber-400" />
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                Your Live Offer
-              </p>
-              <p className="truncate text-xl font-extrabold tracking-tight">
-                {formatINR(effPrices!.offer)}{" "}
-                <span className="text-xs font-medium text-slate-400 line-through">
-                  mkt {formatINR(prices.market)}
-                </span>
-              </p>
-            </div>
-            {step < 8 ? (
-              <button
-                onClick={() => setStep(8)}
-                className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-xs font-extrabold text-slate-950 transition hover:bg-amber-300"
-              >
-                Get Paid
-              </button>
-            ) : null}
-          </div>
-        </motion.div>
-      ) : null}
-
       <p className="mx-auto mt-6 max-w-md text-center text-[11px] leading-relaxed text-slate-400">
         <Info className="mr-1 inline h-3 w-3" />
-        The final price is confirmed after inspection of your appliance&apos;s condition and model
-        at pickup. Online values are approximate Amazon/Flipkart exchange references — there is no
-        obligation to sell.
+        The Standard Exchange Value is an estimate based on typical online exchange rates. The
+        final offer is confirmed after a quick inspection of your appliance at pickup — there is
+        no obligation to sell.
       </p>
     </div>
   );
@@ -679,63 +649,72 @@ function SummaryRow({ label, value }: { label: string; value?: string | null }) 
 
 function SellSuccess({
   code,
-  fallback_text,
+  whatsapp_text,
   offer,
 }: {
   code: string;
-  fallback_text?: string;
+  whatsapp_text?: string;
   offer: number;
   market: number;
 }) {
-  const waMsg = `Hi ${SITE.name}! I booked a free pickup for my old appliance.%0A%0APickup ID: ${code}%0AEstimated Offer: ₹${offer.toLocaleString("en-IN")}%0APlease confirm.`;
+  const waMsg = `Hi ${SITE.name}! I booked a free pickup for my old appliance.\n\nPickup ID: ${code}\nEstimated Offer: ₹${offer.toLocaleString("en-IN")}\nPlease confirm.`;
+  const waUrl = whatsapp_text
+    ? `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(whatsapp_text)}`
+    : `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(waMsg)}`;
+  const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setOpened(true);
+      window.location.assign(waUrl);
+    }, 800);
+    return () => clearTimeout(t);
+  }, [waUrl]);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       className="mx-auto max-w-lg text-center"
     >
-      <div className="card p-8 sm:p-10">
-        <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.15, type: "spring", stiffness: 260, damping: 16 }}
-          className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100"
-        >
-          <PartyPopper className="h-12 w-12 text-emerald-600" />
-        </motion.span>
-        <h2 className="mt-6 text-2xl font-extrabold tracking-tight">Free Pickup Booked!</h2>
-        <p className="mt-2 text-[15px] text-slate-500">
-          Estimated offer of{" "}
-          <b className="text-emerald-700">{formatINR(offer)}</b> noted. Our pickup partner will call
-          you shortly to schedule the visit.
-        </p>
-        <div className="mx-auto mt-6 w-fit rounded-2xl bg-brand-50 px-6 py-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-brand-500">Pickup ID</p>
+      <div className="card p-6 sm:p-8">
+        <div className="rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 ring-1 ring-emerald-100">
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 16 }}
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-emerald-500/30"
+          >
+            <WhatsAppIcon className="h-8 w-8" />
+          </motion.span>
+          <h2 className="mt-4 text-xl font-extrabold tracking-tight text-slate-900">
+            {opened ? "WhatsApp opened — just press Send!" : "Opening WhatsApp with your details…"}
+          </h2>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+            Your offer of <b className="text-emerald-700">{formatINR(offer)}</b> is locked in. The
+            full pickup details are already typed — press <b className="text-slate-700">Send</b>{" "}
+            and attach your appliance photos in the same chat. Our pickup partner will call you to
+            schedule the visit.
+          </p>
+          <a href={waUrl} target="_blank" rel="noopener" className="btn-wa mt-4 w-full !py-3.5">
+            <WhatsAppIcon className="h-5 w-5 shrink-0" /> Details didn&apos;t open? Tap here
+          </a>
+        </div>
+
+        <div className="mt-6">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            Pickup ID — keep this for tracking
+          </p>
           <p className="mt-1 text-2xl font-extrabold tracking-wide text-brand-800">{code}</p>
         </div>
-        <div className="mt-7 space-y-3">
-          <a
-            href={`https://wa.me/${SITE.whatsapp}?text=${waMsg}`}
-            target="_blank"
-            rel="noopener"
-            className="btn-wa w-full !py-4"
-          >
-            <WhatsAppIcon className="h-5 w-5" /> Get Confirmation on WhatsApp
-          </a>
-          <div className="grid grid-cols-2 gap-3">
-            <a href={telLink()} className="btn-outline !py-3.5">
-              <Phone className="h-4 w-4" /> Call Us
-            </a>
-            <button onClick={() => window.location.assign("/track")} className="btn-primary !py-3.5">
-              Track Request
-            </button>
-          </div>
-        </div>
-        {!fallback_text ? (
-          <p className="mt-4 text-xs leading-relaxed text-slate-400">
-            Payment via UPI or cash on pickup. Carry a copy of any old bill if available — not mandatory.
-          </p>
-        ) : null}
+
+        <a href={telLink()} className="btn-outline mt-6 w-full !py-3.5">
+          <Phone className="h-4 w-4" /> Call Us Instead
+        </a>
+        <p className="mt-4 text-xs leading-relaxed text-slate-400">
+          Payment via UPI or cash on pickup. Carry a copy of any old bill if available — not
+          mandatory.
+        </p>
       </div>
     </motion.div>
   );

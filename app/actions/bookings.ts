@@ -1,8 +1,8 @@
 "use server";
 
 import { getServerSupabase } from "@/lib/supabase/server";
-import { genCode } from "@/lib/utils";
-import { notifyWebhook, verifyRecaptcha } from "@/lib/auth";
+import { genCode, mapsLink, prettyDate } from "@/lib/utils";
+import { verifyRecaptcha } from "@/lib/auth";
 
 export interface BookingInput {
   customer_name: string;
@@ -18,7 +18,6 @@ export interface BookingInput {
   address: string;
   lat?: number | null;
   lng?: number | null;
-  photo_url?: string | null;
   website?: string;
   recaptcha_token?: string;
 }
@@ -27,20 +26,22 @@ export interface BookingResult {
   ok: boolean;
   error?: string;
   code?: string;
-  fallback_text?: string;
+  whatsapp_text?: string;
 }
 
-function summaryText(code: string, b: BookingInput) {
+function buildBookingText(code: string, b: BookingInput) {
   return [
-    `New Repair Booking ${code}`,
+    `NEW REPAIR BOOKING — ${code}`,
+    "",
     `Name: ${b.customer_name}`,
     `Mobile: ${b.mobile}`,
-    `Appliance: ${b.appliance_label} (${b.brand}${b.model ? " " + b.model : ""})`,
-    `Problem: ${b.problems.join(", ")}${b.problem_note ? ` — ${b.problem_note}` : ""}`,
-    `When: ${b.preferred_date}, ${b.preferred_slot}`,
+    `Appliance: ${b.appliance_label} — ${b.brand}${b.model ? ` ${b.model}` : ""}`,
+    `Problem: ${b.problems.join(", ")}`,
+    b.problem_note ? `Details: ${b.problem_note}` : "",
+    `Preferred Visit: ${prettyDate(b.preferred_date)}, ${b.preferred_slot}`,
     `Address: ${b.address}`,
-    b.lat && b.lng ? `Location: https://www.google.com/maps?q=${b.lat},${b.lng}` : "",
-    b.photo_url ? `Photo: ${b.photo_url}` : "",
+    b.lat != null && b.lng != null ? `GPS Location: ${mapsLink(b.lat, b.lng)}` : "",
+    "Photo: customer will attach in this chat",
   ]
     .filter(Boolean)
     .join("\n");
@@ -58,9 +59,33 @@ export async function createBooking(input: BookingInput): Promise<BookingResult>
 
   const sb = await getServerSupabase();
   const code = genCode("URE");
+  const text = buildBookingText(code, input);
 
   if (!sb) {
-    return { ok: true, code, fallback_text: summaryText(code, input) };
+    const { getDemoStore } = await import("@/lib/demo-store");
+    const store = getDemoStore();
+    store.bookings.unshift({
+      id: `demo-${Date.now()}`,
+      booking_code: code,
+      created_at: new Date().toISOString(),
+      customer_name: input.customer_name.trim(),
+      mobile: input.mobile,
+      appliance: input.appliance as never,
+      brand: input.brand,
+      model: input.model || null,
+      problems: input.problems,
+      problem_note: input.problem_note || null,
+      preferred_date: input.preferred_date,
+      preferred_slot: input.preferred_slot,
+      address: input.address.trim(),
+      lat: input.lat ?? null,
+      lng: input.lng ?? null,
+      photo_url: null,
+      status: "pending",
+      technician_id: null,
+      admin_note: null,
+    });
+    return { ok: true, code, whatsapp_text: text };
   }
 
   const { error } = await sb.from("bookings").insert({
@@ -77,14 +102,13 @@ export async function createBooking(input: BookingInput): Promise<BookingResult>
     address: input.address.trim(),
     lat: input.lat ?? null,
     lng: input.lng ?? null,
-    photo_url: input.photo_url || null,
+    photo_url: null,
     status: "pending",
   });
 
   if (error) {
-    return { ok: true, code, fallback_text: summaryText(code, input) };
+    return { ok: true, code, whatsapp_text: text };
   }
 
-  notifyWebhook({ type: "booking", code, ...input });
-  return { ok: true, code };
+  return { ok: true, code, whatsapp_text: text };
 }
