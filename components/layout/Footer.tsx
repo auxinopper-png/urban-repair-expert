@@ -10,8 +10,8 @@ const WHATSAPP_MSG = "Hi Urban Repair Expert! I need help with my appliance.";
 export default function Footer() {
   return (
     <footer className="bg-slate-950 pb-24 text-slate-300 lg:pb-0">
-      <div className="wrap grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4 lg:py-16">
-        <div>
+      <div className="wrap grid grid-cols-2 gap-x-6 gap-y-10 py-14 sm:gap-x-8 lg:grid-cols-4 lg:py-16">
+        <div className="col-span-2 lg:col-span-1">
           <Logo light />
           <p className="mt-4 text-sm leading-relaxed text-slate-400">
             {SITE.description}
@@ -65,8 +65,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">Our Services</h3>
-          <ul className="space-y-2.5 text-sm">
+          <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">Our Services</h3>          <ul className="space-y-2.5 text-sm">
             {[
               "AC Repair & Gas Refill",
               "Refrigerator Repair",
@@ -84,7 +83,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="col-span-2 lg:col-span-1">
           <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">Contact Us</h3>
           <ul className="space-y-4 text-sm">
             <li className="flex gap-3">
