@@ -6,11 +6,11 @@ import Reveal from "@/components/Reveal";
 const SELL_ITEMS = [
   {
     label: "Old AC",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Vintage_Air_Conditioner.jpg/1280px-Vintage_Air_Conditioner.jpg",
+    img: "/images/old-ac.jpg",
   },
   {
     label: "Old Refrigerator",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Fridge_at_night_with_open_door.jpg/1280px-Fridge_at_night_with_open_door.jpg",
+    img: "/images/old-fridge.jpg",
   },
 ];
 

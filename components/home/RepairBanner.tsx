@@ -7,22 +7,22 @@ const REPAIR_ITEMS = [
   {
     id: "ac",
     label: "AC Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Modern_split-type_air_conditioner_at_a_school.jpg/1280px-Modern_split-type_air_conditioner_at_a_school.jpg",
+    img: "/images/ac-repair.jpg",
   },
   {
     id: "refrigerator",
     label: "Fridge Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Freezer_door_open_on_refrigerator_in_home_kitchen_in_New_Orleans%2C_March_2025.jpg/1280px-Freezer_door_open_on_refrigerator_in_home_kitchen_in_New_Orleans%2C_March_2025.jpg",
+    img: "/images/fridge-repair.jpg",
   },
   {
     id: "washing_machine",
     label: "Washing Machine",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/SAMSUNG_WASHING_MACHINE_%282%29.jpg/1280px-SAMSUNG_WASHING_MACHINE_%282%29.jpg",
+    img: "/images/washing-machine-repair.jpg",
   },
   {
     id: "geyser",
     label: "Geyser Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Warmwatergeiser.jpg/1280px-Warmwatergeiser.jpg",
+    img: "/images/geyser-repair.jpg",
   },
 ];
 
