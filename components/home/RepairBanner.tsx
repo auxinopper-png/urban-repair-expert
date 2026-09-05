@@ -105,6 +105,10 @@ export default function RepairBanner() {
               ))}
             </div>
 
+            <Link href="/book" className="btn-primary mt-7 w-full !py-4 text-base">
+              Book Repair Now <ArrowRight className="h-5 w-5" />
+            </Link>
+
             <p className="mt-7 flex items-start gap-1.5 text-[11px] leading-relaxed text-slate-500">
               <Wrench className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               Diagnosis charge is adjusted in the final bill · Exact quote approved by you before
