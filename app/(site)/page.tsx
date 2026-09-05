@@ -57,8 +57,8 @@ export default function HomePage() {
         }}
       />
       <Hero />
-      <RepairBanner />
       <SellBanner />
+      <RepairBanner />
       <ServicesGrid />
       <HowItWorks />
       <StatsBar />
