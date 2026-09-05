@@ -6,17 +6,17 @@ import Reveal from "@/components/Reveal";
 const SELL_ITEMS = [
   {
     label: "Old AC",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Frigidaire_Window_Air_Conditioner_-_exterior.jpg/960px-Frigidaire_Window_Air_Conditioner_-_exterior.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Frigidaire_Window_Air_Conditioner_-_exterior.jpg/1280px-Frigidaire_Window_Air_Conditioner_-_exterior.jpg",
   },
   {
     label: "Old Refrigerator",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg/960px-Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg/1280px-Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg",
   },
 ];
 
 export default function SellBanner() {
   return (
-    <section className="wrap py-16 lg:py-24">
+    <section className="wrap pt-14 pb-16 lg:pt-20 lg:pb-24">
       <Reveal>
         <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-950 via-brand-950 to-brand-900 px-6 py-12 text-white shadow-glow sm:px-10 lg:px-14 lg:py-16">
           <div
@@ -55,7 +55,7 @@ export default function SellBanner() {
                   href="/sell"
                   className="group overflow-hidden rounded-[24px] bg-white/[0.06] ring-1 ring-inset ring-white/15 transition hover:-translate-y-1 hover:bg-white/10 hover:ring-amber-400/40"
                 >
-                  <div className="relative aspect-[16/9] w-full overflow-hidden">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-white">
                     <Image
                       src={item.img}
                       alt={item.label}
@@ -63,7 +63,6 @@ export default function SellBanner() {
                       sizes="(max-width: 640px) 100vw, 400px"
                       className="object-cover transition duration-500 group-hover:scale-105"
                     />
-                    <span className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
                   </div>
                   <div className="flex items-center justify-between gap-3 p-4 sm:p-5">
                     <p className="text-base font-extrabold sm:text-lg">{item.label}</p>

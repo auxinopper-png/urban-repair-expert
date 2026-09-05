@@ -7,28 +7,28 @@ const REPAIR_ITEMS = [
   {
     id: "ac",
     label: "AC Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Panasonic_AIR_CONDITIONER_INDOOR_UNIT_CS-C10KJ2_%282%29.jpg/960px-Panasonic_AIR_CONDITIONER_INDOOR_UNIT_CS-C10KJ2_%282%29.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Panasonic_AIR_CONDITIONER_INDOOR_UNIT_CS-C10KJ2_%282%29.jpg/1280px-Panasonic_AIR_CONDITIONER_INDOOR_UNIT_CS-C10KJ2_%282%29.jpg",
   },
   {
     id: "refrigerator",
     label: "Fridge Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Freezer_door_open_on_refrigerator_in_home_kitchen_in_New_Orleans%2C_March_2025.jpg/960px-Freezer_door_open_on_refrigerator_in_home_kitchen_in_New_Orleans%2C_March_2025.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Panasonic_HOME_REFRIGERATOR_NR-C320WP-N.jpg/1280px-Panasonic_HOME_REFRIGERATOR_NR-C320WP-N.jpg",
   },
   {
     id: "washing_machine",
     label: "Washing Machine",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/SAMSUNG_WASHING_MACHINE_%282%29.jpg/960px-SAMSUNG_WASHING_MACHINE_%282%29.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/SAMSUNG_WASHING_MACHINE_%282%29.jpg/1280px-SAMSUNG_WASHING_MACHINE_%282%29.jpg",
   },
   {
     id: "geyser",
     label: "Geyser Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Water_Heater_White.jpg/960px-Water_Heater_White.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Water_Heater_White.jpg/1280px-Water_Heater_White.jpg",
   },
 ];
 
 export default function RepairBanner() {
   return (
-    <section className="wrap py-16 lg:py-24">
+    <section className="wrap pb-16 lg:pb-24">
       <Reveal>
         <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-950 via-brand-950 to-brand-900 px-6 py-12 text-white shadow-glow sm:px-10 lg:px-14 lg:py-16">
           <div
@@ -67,7 +67,7 @@ export default function RepairBanner() {
                   href={`/book?appliance=${item.id}`}
                   className="group overflow-hidden rounded-[22px] bg-white/[0.06] ring-1 ring-inset ring-white/15 transition hover:-translate-y-1 hover:bg-white/10 hover:ring-amber-400/40"
                 >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-white">
                     <Image
                       src={item.img}
                       alt={item.label}
@@ -75,7 +75,6 @@ export default function RepairBanner() {
                       sizes="(max-width: 640px) 50vw, 25vw"
                       className="object-cover transition duration-500 group-hover:scale-105"
                     />
-                    <span className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
                   </div>
                   <div className="flex items-center justify-between gap-2 p-3.5 sm:p-4">
                     <p className="text-[13.5px] font-extrabold sm:text-sm">{item.label}</p>
