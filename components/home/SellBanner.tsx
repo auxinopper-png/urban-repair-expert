@@ -6,11 +6,11 @@ import Reveal from "@/components/Reveal";
 const SELL_ITEMS = [
   {
     label: "Old AC",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Frigidaire_Window_Air_Conditioner_-_exterior.jpg/1280px-Frigidaire_Window_Air_Conditioner_-_exterior.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Vintage_Air_Conditioner.jpg/1280px-Vintage_Air_Conditioner.jpg",
   },
   {
     label: "Old Refrigerator",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg/1280px-Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Fridge_at_night_with_open_door.jpg/1280px-Fridge_at_night_with_open_door.jpg",
   },
 ];
 

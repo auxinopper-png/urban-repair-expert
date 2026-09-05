@@ -12,7 +12,7 @@ const REPAIR_ITEMS = [
   {
     id: "refrigerator",
     label: "Fridge Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Samsung_French_Door_Refrigerator_with_Food_Showcase_Design_%2816676046120%29.jpg/1280px-Samsung_French_Door_Refrigerator_with_Food_Showcase_Design_%2816676046120%29.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Freezer_door_open_on_refrigerator_in_home_kitchen_in_New_Orleans%2C_March_2025.jpg/1280px-Freezer_door_open_on_refrigerator_in_home_kitchen_in_New_Orleans%2C_March_2025.jpg",
   },
   {
     id: "washing_machine",
