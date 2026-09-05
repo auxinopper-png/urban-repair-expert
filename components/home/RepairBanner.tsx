@@ -7,12 +7,12 @@ const REPAIR_ITEMS = [
   {
     id: "ac",
     label: "AC Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Panasonic_AIR_CONDITIONER_INDOOR_UNIT_CS-C10KJ2_%282%29.jpg/1280px-Panasonic_AIR_CONDITIONER_INDOOR_UNIT_CS-C10KJ2_%282%29.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Modern_split-type_air_conditioner_at_a_school.jpg/1280px-Modern_split-type_air_conditioner_at_a_school.jpg",
   },
   {
     id: "refrigerator",
     label: "Fridge Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Panasonic_HOME_REFRIGERATOR_NR-C320WP-N.jpg/1280px-Panasonic_HOME_REFRIGERATOR_NR-C320WP-N.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Samsung_French_Door_Refrigerator_with_Food_Showcase_Design_%2816676046120%29.jpg/1280px-Samsung_French_Door_Refrigerator_with_Food_Showcase_Design_%2816676046120%29.jpg",
   },
   {
     id: "washing_machine",
@@ -22,7 +22,7 @@ const REPAIR_ITEMS = [
   {
     id: "geyser",
     label: "Geyser Repair",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Water_Heater_White.jpg/1280px-Water_Heater_White.jpg",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Warmwatergeiser.jpg/1280px-Warmwatergeiser.jpg",
   },
 ];
 
