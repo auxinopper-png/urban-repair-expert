@@ -56,7 +56,7 @@ export default function BookingForm() {
     const a = params.get("appliance");
     if (a && SERVICES.some((s) => s.id === a)) {
       setAppliance(a);
-      setStep(1);
+      setStep(0);
     }
   }, [params]);
 
