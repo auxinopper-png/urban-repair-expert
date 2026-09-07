@@ -51,11 +51,13 @@ export default function BookingForm() {
   const [location, setLocation] = useState<LocationValue>({ address: "", lat: null, lng: null });
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [website, setWebsite] = useState("");
+  const [preset, setPreset] = useState(false);
 
   useEffect(() => {
     const a = params.get("appliance");
     if (a && SERVICES.some((s) => s.id === a)) {
       setAppliance(a);
+      setPreset(true);
       setStep(0);
     }
   }, [params]);
@@ -212,56 +214,69 @@ export default function BookingForm() {
         >
           {step === 0 ? (
             <div>
-              <h2 className="text-xl font-extrabold tracking-tight">What needs fixing?</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Pick your appliance — takes just a few taps.
-              </p>
+              {preset && appliance ? (
+                <>
+                  <h2 className="text-xl font-extrabold tracking-tight">{svc?.label}</h2>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Selected — confirm the details below and we&apos;ll send the right expert.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-xl font-extrabold tracking-tight">What needs fixing?</h2>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Pick your appliance — takes just a few taps.
+                  </p>
+                </>
+              )}
 
-              <div
-                id="fld-appliance"
-                className={cn(
-                  "mt-5 grid grid-cols-2 gap-3 rounded-3xl",
-                  isErr("appliance") && "bg-rose-50/60 p-1 -m-1 outline outline-2 outline-rose-300"
-                )}
-              >
-                {SERVICES.map((s, i) => {
-                  const Icon = APPLIANCE_ICONS[i];
-                  const active = appliance === s.id;
-                  return (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => {
-                        setAppliance(s.id);
-                        setProblems([]);
-                        setBrand("");
-                        clearErr("appliance");
-                      }}
-                      className={cn(
-                        "flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition active:scale-[0.98]",
-                        active
-                          ? "border-brand-600 bg-brand-50"
-                          : "border-slate-100 bg-white hover:border-brand-200"
-                      )}
-                    >
-                      <span
+              {!preset ? (
+                <div
+                  id="fld-appliance"
+                  className={cn(
+                    "mt-5 grid grid-cols-2 gap-3 rounded-3xl",
+                    isErr("appliance") && "bg-rose-50/60 p-1 -m-1 outline outline-2 outline-rose-300"
+                  )}
+                >
+                  {SERVICES.map((s, i) => {
+                    const Icon = APPLIANCE_ICONS[i];
+                    const active = appliance === s.id;
+                    return (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => {
+                          setAppliance(s.id);
+                          setProblems([]);
+                          setBrand("");
+                          clearErr("appliance");
+                        }}
                         className={cn(
-                          "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
-                          active ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-500"
+                          "flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition active:scale-[0.98]",
+                          active
+                            ? "border-brand-600 bg-brand-50"
+                            : "border-slate-100 bg-white hover:border-brand-200"
                         )}
                       >
-                        <Icon className="h-6 w-6" />
-                      </span>
-                      <span>
-                        <span className="block text-[14.5px] font-bold leading-tight text-slate-900">
-                          {s.short}
+                        <span
+                          className={cn(
+                            "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
+                            active ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-500"
+                          )}
+                        >
+                          <Icon className="h-6 w-6" />
                         </span>
-                        <span className="mt-0.5 block text-xs text-slate-400">{s.label}</span>
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                        <span>
+                          <span className="block text-[14.5px] font-bold leading-tight text-slate-900">
+                            {s.short}
+                          </span>
+                          <span className="mt-0.5 block text-xs text-slate-400">{s.label}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
               <ErrLine k="appliance" msg="Please select an appliance first" />
 
               {appliance ? (
