@@ -11,7 +11,14 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function SellPage() {
+export default async function SellPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ appliance?: string }>;
+}) {
+  const { appliance } = await searchParams;
+  const initialAppliance =
+    appliance === "ac" || appliance === "refrigerator" ? appliance : null;
   const tree = await getPricingTree();
 
   return (
@@ -33,7 +40,7 @@ export default async function SellPage() {
           </p>
         </div>
 
-        <SellWizard tree={tree} />
+        <SellWizard tree={tree} initialAppliance={initialAppliance} />
       </div>
     </section>
   );

@@ -42,9 +42,17 @@ const PHOTO_SLOTS = [
   { key: "video", label: "Short Video", video: true },
 ];
 
-export default function SellWizard({ tree }: { tree: PricingTree }) {
-  const [step, setStep] = useState(0);
-  const [appliance, setAppliance] = useState<"refrigerator" | "ac" | null>(null);
+export default function SellWizard({
+  tree,
+  initialAppliance,
+}: {
+  tree: PricingTree;
+  initialAppliance?: "refrigerator" | "ac" | null;
+}) {
+  const [step, setStep] = useState(initialAppliance ? 1 : 0);
+  const [appliance, setAppliance] = useState<"refrigerator" | "ac" | null>(
+    initialAppliance === "ac" || initialAppliance === "refrigerator" ? initialAppliance : null
+  );
   const [brandId, setBrandId] = useState<string | null>(null);
   const [modelId, setModelId] = useState<string | null>(null);
   const [capacityId, setCapacityId] = useState<string | null>(null);

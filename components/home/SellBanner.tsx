@@ -6,11 +6,13 @@ import Reveal from "@/components/Reveal";
 const SELL_ITEMS = [
   {
     label: "Old AC",
-    img: "/images/old-ac.jpg",
+    href: "/sell?appliance=ac",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Vintage_Air_Conditioner.jpg/1280px-Vintage_Air_Conditioner.jpg",
   },
   {
     label: "Old Refrigerator",
-    img: "/images/old-fridge.jpg",
+    href: "/sell?appliance=refrigerator",
+    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Fridge_at_night_with_open_door.jpg/1280px-Fridge_at_night_with_open_door.jpg",
   },
 ];
 
@@ -52,7 +54,7 @@ export default function SellBanner() {
               {SELL_ITEMS.map((item) => (
                 <Link
                   key={item.label}
-                  href="/sell"
+                  href={item.href}
                   className="group overflow-hidden rounded-[24px] bg-white/[0.06] ring-1 ring-inset ring-white/15 transition hover:-translate-y-1 hover:bg-white/10 hover:ring-amber-400/40"
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-white">
