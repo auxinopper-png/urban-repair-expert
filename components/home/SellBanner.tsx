@@ -7,12 +7,12 @@ const SELL_ITEMS = [
   {
     label: "Old AC",
     href: "/sell?appliance=ac",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Frigidaire_Window_Air_Conditioner_-_exterior.jpg/1280px-Frigidaire_Window_Air_Conditioner_-_exterior.jpg",
+    img: "/images/old-ac.jpg",
   },
   {
     label: "Old Refrigerator",
     href: "/sell?appliance=refrigerator",
-    img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg/1280px-Beautiful_magnets_on_a_vintage_fridge_%28Unsplash%29.jpg",
+    img: "/images/old-fridge.jpg",
   },
 ];
 
